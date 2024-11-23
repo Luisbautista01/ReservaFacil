@@ -1,0 +1,2044 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestión de Hotel</title>
+
+    <link rel="stylesheet" href="css/bootstrap.min.css">
+
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.8.1/font/bootstrap-icons.min.css">
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+
+    <style>
+        /* =========================
+           VARIABLES GLOBALES
+        ========================= */
+        :root {
+            --color-primario: #007bff;
+            --color-secundario: #ffcc00;
+            --color-fondo: #f4f6f9;
+            --color-texto: #495057;
+            --color-blanco: #fff;
+            --color-gris: #6c757d;
+            --sombra-ligera: 0 4px 6px rgba(0, 0, 0, 0.1);
+            --sombra-media: 0 8px 20px rgba(0, 0, 0, 0.2);
+            --transicion-general: 0.3s ease;
+        }
+
+        /* =========================
+           ESTILOS GLOBALES
+        ========================= */
+        body {
+            background-color: var(--color-fondo);
+            font-family: 'Poppins', sans-serif;
+            color: var(--color-texto);
+            line-height: 1.6;
+            margin: 0;
+            padding: 0;
+            font-size: 16px;
+            overflow-x: hidden;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        h2, h3 {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--color-primario);
+        }
+
+        a {
+            color: inherit;
+            text-decoration: none;
+            transition: color var(--transicion-general);
+        }
+
+        a:hover {
+            color: var(--color-secundario);
+        }
+
+        /* =========================
+                NAVBAR AJUSTADA
+        ========================= */
+        .nav-custom {
+            display: flex;
+            justify-content: center;
+            gap: 0.5rem; /* Espaciado entre botones */
+            margin: 1.5rem 0;
+        }
+
+        .nav-custom button {
+            font-size: 0.9rem; /* Texto más pequeño */
+            font-weight: 500; /* Peso del texto más ligero */
+            padding: 0.6rem 1rem; /* Botones más compactos */
+            border-radius: 5px; /* Bordes ligeramente redondeados */
+            border: 1px solid var(--color-primario); /* Borde fino */
+            color: var(--color-primario);
+            background-color: var(--color-blanco);
+            transition: transform 0.2s ease, background-color 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .nav-custom button i {
+            margin-right: 0.4rem; /* Separación menor entre ícono y texto */
+            font-size: 1rem; /* Ícono más pequeño */
+        }
+
+        .nav-custom button:hover {
+            background-color: var(--color-primario);
+            color: var(--color-blanco);
+            transform: scale(1.05); /* Efecto de hover más sutil */
+            box-shadow: 0px 3px 8px rgba(0, 0, 0, 0.1); /* Sombra ligera */
+        }
+
+        .nav-custom button:active {
+            transform: scale(1); /* Menos movimiento al hacer clic */
+            box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.2);
+        }
+
+        /* =========================
+           BANNER
+        ========================= */
+        .banner {
+           background-image: linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)), url('img/hotel.jpeg');
+           background-size: cover;
+           background-position: center;
+           color: #ffffff;
+           filter: brightness(100%);
+           width: 100%;
+           min-height: 400px;
+           display: flex;
+           flex-direction: column;
+           justify-content: center;
+           align-items: center;
+           text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
+           padding: 20px;
+           box-sizing: border-box;
+        }
+
+        /* =========================
+           TARJETAS
+        ========================= */
+        .card {
+            background: linear-gradient(135deg, #6ec1e4, #eef2f3);
+            color: #333;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: var(--sombra-ligera);
+            transition: transform var(--transicion-general), box-shadow var(--transicion-general);
+            flex: 1;
+            min-width: 250px;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--sombra-media);
+        }
+
+        .card img {
+            transition: transform var(--transicion-general);
+            border-radius: 8px;
+        }
+
+        .card:hover img {
+            transform: scale(1.05);
+        }
+
+        .card-body {
+            padding: 20px;
+        }
+
+        .card-title {
+            font-weight: 600;
+            color: #333;
+        }
+
+        .card-text {
+            font-size: 1rem;
+            color: var(--color-gris);
+            margin-bottom: 15px;
+        }
+
+        /* =========================
+           BOTONES
+        ========================= */
+         .btn-custom {
+            background-color: var(--color-primario);
+            color: var(--color-blanco);
+            border-radius: 50px;
+            padding: 12px 20px;
+            box-shadow: var(--sombra-ligera);
+            text-transform: uppercase;
+            transition: background-color var(--transicion-general), transform var(--transicion-general);
+        }
+
+        .btn-custom:hover {
+            background-color: #0056b3;
+            transform: translateY(-3px);
+        }
+
+        /* Botones en tarjetas */
+        .card .btn {
+            min-width: 100px;
+            font-size: 14px;
+            padding: 12px 20px;
+        }
+
+        .card-buttons {
+            display: flex;
+            gap: 10px;
+            justify-content: flex-end;
+        }
+
+        .btn {
+            border-radius: 50px;
+            padding: 10px 20px;
+            font-weight: bold;
+            transition: background-color var(--transicion-general), transform var(--transicion-general);
+        }
+
+        .btn-primary {
+            background-color: var(--color-primario);
+            border: none;
+        }
+
+        .btn-primary:hover {
+            background-color: var(--color-secundario);
+            color: var(--color-blanco);
+            transform: scale(1.05);
+        }
+
+        /* =========================
+           FORMULARIOS
+        ========================= */
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-control {
+            border-radius: 8px;
+            border: 1px solid #ced4da;
+            box-shadow: var(--sombra-ligera);
+            transition: border-color var(--transicion-general), box-shadow var(--transicion-general);
+        }
+
+        /* =========================
+           CONTENEDORES Y LISTAS
+        ========================= */
+        .card-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 2rem;
+            justify-content: space-between;
+            padding: 2rem;
+        }
+
+        #clientes-list,
+        #reservas-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 16px;
+            justify-content: center;
+        }
+
+        #empleados-list .card,
+        #reservas-list .card {
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            justify-content: space-between;
+            padding: 10px;
+        }
+
+        /* Mejoras para la sección de pagos */
+        .table thead th {
+            font-weight: bold;
+            background-color: #f8f9fa; /* Fondo claro */
+        }
+
+        .table-striped tbody tr:nth-child(odd) {
+            background-color: #f7f7f7; /* Fila alterna de color claro */
+        }
+
+        .text-success {
+            font-size: 1.75rem;
+        }
+
+        /* =========================
+           RESPONSIVIDAD
+        ========================= */
+        @media (max-width: 768px) {
+            .banner {
+                min-height: 300px;
+            }
+
+            .card-container {
+                flex-direction: column;
+                gap: 1rem;
+            }
+
+            h2, h3 {
+                font-size: 1.5rem;
+            }
+
+            #clientes-list,
+            #empleados-list,
+            #habitaciones-list,
+            #reservas-list {
+                flex-direction: column;
+                gap: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<!-- Encabezado con imagen y texto -->
+<header id="banner" class="banner text-center">
+    <h1 class="display-4">Bienvenido a ReservaFácil</h1>
+    <p class="lead">Descansa en el lugar ideal</p>
+</header>
+
+<!-- Navegación -->
+<div class="container my-4">
+    <nav class="nav-custom">
+        <button onclick="toggleSection('hotel-section')">
+            <i class="bi bi-building"></i> Información del Hotel
+        </button>
+        <button onclick="toggleSection('clientes-section')">
+            <i class="bi bi-person-circle"></i> Clientes
+        </button>
+        <button onclick="toggleSection('empleados-section')">
+            <i class="bi bi-people-fill"></i> Empleados
+        </button>
+        <button onclick="toggleSection('habitaciones-section')">
+            <i class="bi bi-door-closed"></i> Habitaciones
+        </button>
+        <button onclick="toggleSection('reservas-section')">
+            <i class="bi bi-calendar-check"></i> Reservas
+        </button>
+        <button onclick="toggleSection('inventarios-section')">
+            <i class="bi bi-box-seam"></i> Inventarios
+        </button>
+        <button onclick="toggleSection('reportes-section')">
+            <i class="bi bi-graph-up"></i> Reportes Mensuales
+        </button>
+    </nav>
+</div>
+
+<!-- Contenedor de Banner y Información del Hotel -->
+<div id="main-section">
+
+    <!-- Sección Información del Hotel -->
+    <div id="hotel-section" class="section content-section">
+        <div class="container my-5">
+            <h2 class="text-center mb-4">Bienvenido a Nuestro Hotel</h2>
+            <p class="text-center text-muted">Donde la comodidad y el servicio de calidad son nuestra prioridad.
+                Disfruta de unas instalaciones modernas y un ambiente acogedor.</p>
+            <div class="row">
+                <div class="col-md-4 mb-4">
+                    <div class="card shadow-sm">
+                        <img src="img/habitacion1.jpg" class="card-img-top" alt="Habitaciones Confortables">
+                        <div class="card-body text-center">
+                            <h5 class="card-title">Habitaciones Confortables</h5>
+                            <p class="card-text">Nuestras habitaciones están diseñadas para ofrecer una experiencia
+                                única.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4 mb-4">
+                    <div class="card shadow-sm">
+                        <img src="img/comodidad1.webp" class="card-img-top" alt="Instalaciones Modernas">
+                        <div class="card-body text-center">
+                            <h5 class="card-title">Instalaciones Modernas</h5>
+                            <p class="card-text">Disfruta de áreas modernas y bien equipadas para tu confort.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4 mb-4">
+                    <div class="card shadow-sm">
+                        <img src="img/bebidas.jpg" class="card-img-top" alt="Servicio Excepcional">
+                        <div class="card-body text-center">
+                            <h5 class="card-title">Servicio Excepcional</h5>
+                            <p class="card-text">Nuestro equipo está listo para cubrir todas tus necesidades.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Sección Clientes -->
+<div id="clientes-section" class="section content-section d-none">
+    <h2 class="text-center">👥 Gestión de Clientes</h2>
+    <div class="card mb-4 col-md-8 mx-auto">
+        <div class="card-header">➕ Agregar Cliente</div>
+        <div class="card-body">
+            <form id="clienteForm" onsubmit="crearCliente(); return false;">
+                <div class="form-group">
+                    <label for="clienteNombre">👤 Nombre</label>
+                    <input type="text" id="clienteNombre" class="form-control" placeholder="Ingresa el nombre"
+                           required>
+                </div>
+                <div class="form-group">
+                    <label for="clienteApellido">📝 Apellido</label>
+                    <input type="text" id="clienteApellido" class="form-control" placeholder="Ingresa el apellido"
+                           required>
+                </div>
+                <div class="form-group">
+                    <label for="clienteCorreoElectronico">📧 Correo Electrónico</label>
+                    <input type="email" id="clienteCorreoElectronico" class="form-control"
+                           placeholder="Ingresa el correo electrónico" required>
+                </div>
+                <div class="form-group">
+                    <label for="clienteTelefono">📞 Teléfono</label>
+                    <input type="tel" id="clienteTelefono" class="form-control" placeholder="Ingresa el teléfono"
+                           required>
+                </div>
+                <button type="submit" class="btn btn-success">✅ Crear Cliente</button>
+            </form>
+        </div>
+    </div>
+
+    <h3 class="text-center mb-4">📋 Listado de Clientes</h3>
+    <div class="row" id="clientes-list"></div>
+
+    <div class="card mb-4 col-md-8 mx-auto">
+        <div class="card-header">🔍 Buscar Clientes por ID</div>
+        <div class="card-body">
+            <form id="buscarClienteForm" onsubmit="buscarClientePorId(); return false;">
+                <div class="form-group">
+                    <label for="clienteId">🆔 ID del Cliente</label>
+                    <input type="number" id="clienteId" class="form-control" placeholder="Ingresa el ID del cliente"
+                           required>
+                </div>
+                <button type="submit" class="btn btn-primary">🔎 Buscar</button>
+            </form>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-4 mb-3">
+            <div id="clienteDetalle" class="list-group"></div>
+        </div>
+    </div>
+</div>
+
+<!-- Sección Empleados -->
+<div id="empleados-section" class="section content-section d-none">
+    <h2 class="text-center">👔 Gestión de Empleados</h2>
+    <div class="card mb-4 col-md-8 mx-auto">
+        <div class="card-header">➕ Agregar Empleado</div>
+        <div class="card-body">
+            <form id="empleadoForm" onsubmit="crearEmpleado(); return false;">
+                <div class="form-group">
+                    <label for="empleadoNombre">👤 Nombre</label>
+                    <input type="text" id="empleadoNombre" class="form-control" placeholder="Ingresa el nombre"
+                           required>
+                </div>
+                <div class="form-group">
+                    <label for="empleadoApellido">📝 Apellido</label>
+                    <input type="text" id="empleadoApellido" class="form-control" placeholder="Ingresa el apellido"
+                           required>
+                </div>
+                <div class="form-group">
+                    <label for="empleadoCorreoElectronico">📧 Correo Electrónico</label>
+                    <input type="email" id="empleadoCorreoElectronico" class="form-control"
+                           placeholder="Ingresa el correo electrónico" required>
+                </div>
+                <div class="form-group">
+                    <label for="empleadoRol">🎯 Rol</label>
+                    <input type="text" id="empleadoRol" class="form-control" placeholder="Ingresa el rol" required>
+                </div>
+                <button type="submit" class="btn btn-success">✅ Crear Empleado</button>
+            </form>
+        </div>
+    </div>
+
+    <h3 class="text-center mb-4">📋 Listado de Empleados</h3>
+    <div class="row" id="empleados-list"></div>
+
+    <div class="card mb-4 col-md-8 mx-auto">
+        <div class="card-header">🔍 Buscar Empleados por Rol</div>
+        <div class="card-body">
+            <form id="buscarEmpleadoForm" onsubmit="buscarEmpleadosPorRol(); return false;">
+                <div class="form-group">
+                    <label for="rolBusquedaInput">🎯 Rol</label>
+                    <input type="text" id="rolBusquedaInput" class="form-control"
+                           placeholder="Ingresa el rol para buscar" required>
+                </div>
+                <button type="submit" class="btn btn-primary">🔎 Buscar</button>
+            </form>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-4 mb-3">
+            <div id="resultadoBusquedaRol" class="list-group"></div>
+        </div>
+    </div>
+</div>
+
+<!-- Sección Habitaciones -->
+<div id="habitaciones-section" class="section content-section d-none">
+    <h2 class="text-center">🏨 Gestión de Habitaciones</h2>
+    <div class="card mb-4 col-md-8 mx-auto">
+        <div class="card-header">➕ Agregar Habitación</div>
+        <div class="card-body">
+            <form id="habitacionForm" onsubmit="crearHabitacion(); return false;">
+                <div class="form-group">
+                    <label for="habitacionTipo">🛏️ Tipo de Habitación</label>
+                    <input type="text" id="habitacionTipo" class="form-control" placeholder="Ej. Suite, VIP"
+                           required>
+                </div>
+                <div class="form-group">
+                    <label for="habitacionCapacidad">👨‍👩‍👧‍👦 Capacidad</label>
+                    <input type="number" id="habitacionCapacidad" class="form-control" placeholder="Número de personas"
+                           required>
+                </div>
+                <div class="form-group">
+                    <label for="habitacionPrecio">💰 Precio por Noche (COP)</label>
+                    <input type="number" id="habitacionPrecio" class="form-control" placeholder="Precio en COP"
+                           required>
+                </div>
+                <div class="form-group">
+                    <label for="habitacionImagen">🖼️ URL de la Imagen</label>
+                    <input type="text" id="habitacionImagen" class="form-control" placeholder="URL de la imagen"
+                           required>
+                </div>
+                <div class="form-group form-check">
+                    <input type="checkbox" id="habitacionDisponible" class="form-check-input">
+                    <label for="habitacionDisponible" class="form-check-label">✔️ Disponible</label>
+                </div>
+                <button type="submit" class="btn btn-success">✅ Crear Habitación</button>
+            </form>
+        </div>
+    </div>
+
+    <h3 class="text-center mb-4">📋 Listado de Habitaciones</h3>
+    <div class="row" id="habitaciones-list"></div>
+
+    <!-- Búsqueda por ID de Habitación -->
+    <div class="card mb-4 col-md-8 mx-auto">
+        <div class="card-header">🔍 Buscar Habitación por ID</div>
+        <div class="card-body">
+            <form id="buscarHabitacionForm" onsubmit="buscarHabitacion(); return false;">
+                <div class="form-group">
+                    <label for="habitacionId">🆔 ID de la Habitación</label>
+                    <input type="number" id="habitacionId" class="form-control"
+                           placeholder="Ingrese el ID de la habitación" required>
+                </div>
+                <button type="submit" class="btn btn-primary">🔎 Buscar</button>
+            </form>
+        </div>
+    </div>
+
+    <div id="detalleHabitacion"></div>
+</div>
+
+<div id="reservas-section" class="section content-section d-none">
+    <h2 class="text-center">📅 Gestión de Reservas</h2>
+
+    <!-- Formulario para crear o actualizar una reserva -->
+    <div class="card mb-4 col-md-8 mx-auto">
+        <div class="card-header">➕ Agregar Reserva</div>
+        <div class="card-body">
+            <form id="reservaForm" onsubmit="event.preventDefault(); crearReserva(); return false;">
+                <input type="hidden" id="reservaId">
+
+                <div class="form-group">
+                    <label for="reservaClienteId">👤 Cliente ID</label>
+                    <input type="number" id="reservaClienteId" class="form-control"
+                           placeholder="Ingresa el ID del cliente"
+                           required>
+                </div>
+                <div class="form-group">
+                    <label for="reservaHabitacionId">🛏️ Habitación ID</label>
+                    <input type="number" id="reservaHabitacionId" class="form-control"
+                           placeholder="Ingresa el ID de la habitación" required>
+                </div>
+                <div class="form-group">
+                    <label for="reservaEmpleadoId">👨‍💼 Empleado ID</label>
+                    <input type="number" id="reservaEmpleadoId" class="form-control"
+                           placeholder="Ingresa el ID del empleado" required>
+                </div>
+                <div class="form-group">
+                    <label for="reservaFechaInicio">📅 Fecha Ingreso</label>
+                    <input type="date" id="reservaFechaInicio" class="form-control"
+                           placeholder="Ingresa la Fecha de Ingreso" required>
+                </div>
+                <div class="form-group">
+                    <label for="reservaFechaFin">📆 Fecha Salida</label>
+                    <input type="date" id="reservaFechaFin" class="form-control"
+                           placeholder="Ingresa la Fecha de Salida"
+                           required>
+                </div>
+                <div class="form-group">
+                    <label for="reservaTotal">💰 Total (COP)</label>
+                    <input type="number" id="reservaTotal" class="form-control" placeholder="Ingresa el Total" required>
+                </div>
+                <button type="submit" class="btn btn-success" id="accionReservaBtn">✅ Crear Reserva</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Listado de Reservas -->
+    <h3 class="text-center mb-4">📋 Listado de Reservas</h3>
+    <div id="reservas-list" class="row justify-content-center"></div>
+
+    <!-- Buscar Reservas -->
+    <h3 class="text-center mb-4">🔍 Buscar Reservas</h3>
+    <div class="row">
+        <!-- Buscar por ID de reserva -->
+        <div class="col-md-4 mb-3">
+            <div class="card mb-4 col-md-8 mx-auto">
+                <div class="card-header">🆔Buscar por ID de Reserva</div>
+                <form id="buscarReservaPorIdForm"
+                      onsubmit="event.preventDefault(); buscarReservaPorId(); return false;">
+                    <div class="form-group">
+                        <label for="busquedaId">🆔 ID de Reserva</label>
+                        <input type="number" id="busquedaId" class="form-control"
+                               placeholder="Ingresa el ID de la reserva">
+                    </div>
+                    <button type="submit" class="btn btn-primary">Buscar</button>
+                </form>
+            </div>
+        </div>
+
+        <!-- Buscar por ID de Cliente -->
+        <div class="col-md-4 mb-3">
+            <div class="card mb-4 col-md-8 mx-auto">
+                <div class="card-header">👤 Buscar por ID de Cliente</div>
+                <form id="buscarReservaPorClienteForm"
+                      onsubmit="event.preventDefault(); buscarReservaPorCliente(); return false;">
+                    <div class="form-group">
+                        <label for="busquedaClienteId">👤 ID de Cliente</label>
+                        <input type="number" id="busquedaClienteId" class="form-control"
+                               placeholder="Ingresa el ID del cliente">
+                    </div>
+                    <button type="submit" class="btn btn-primary">🔎 Buscar</button>
+                </form>
+            </div>
+        </div>
+
+        <!-- Buscar por ID de Empleado -->
+        <div class="col-md-4 mb-3">
+            <div class="card mb-4 col-md-8 mx-auto">
+                <div class="card-header">👨‍💼 Buscar por ID de Empleado</div>
+                <form id="buscarReservaPorEmpleadoForm"
+                      onsubmit="event.preventDefault(); buscarReservaPorEmpleado(); return false;">
+                    <div class="form-group">
+                        <label for="busquedaEmpleadoId">👨‍💼 ID de Empleado</label>
+                        <input type="number" id="busquedaEmpleadoId" class="form-control"
+                               placeholder="Ingresa el ID del empleado">
+                    </div>
+                    <button type="submit" class="btn btn-primary">🔎 Buscar</button>
+                </form>
+            </div>
+        </div>
+
+        <!-- Contenedor para mostrar resultados de búsqueda específicos -->
+        <h3 class="text-center mb-4">Resultados de Búsqueda</h3>
+        <div id="resultados-busqueda" class="col-md-4 mb-3">
+            <div class="card mb-4 col-md-8 mx-auto">
+                <div id="resultados-list" class="list-group"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="inventarios-section" class="section content-section d-none">
+    <h2 class="text-center">📦 Gestión de Inventarios</h2>
+    <div class="card mb-4 col-md-8 mx-auto">
+        <div class="card-header">➕ Agregar Inventario</div>
+        <div class="card-body">
+            <!-- Formulario para crear/actualizar inventarios -->
+            <form id="inventarioForm" onsubmit="event.preventDefault(); guardarInventario();">
+                <input id="inventarioId" type="hidden">
+                <div class="mb-3">
+                    <label for="habitacionId" class="form-label">🛏️ Habitación ID:</label>
+                    <input type="number" class="form-control" id="habitacionId" placeholder="Ej. 1,2,3..." required>
+                </div>
+                <div class="mb-3">
+                    <label for="item" class="form-label">📋 Item:</label>
+                    <input type="text" class="form-control" id="item" placeholder="Ej. Cama, sabana" required>
+                </div>
+                <div class="mb-3">
+                    <label for="cantidad" class="form-label">🔢 Cantidad:</label>
+                    <input type="number" class="form-control" id="cantidad" placeholder="Ej. 1,2,3,..." required>
+                </div>
+                <div class="mb-3">
+                    <label for="costo" class="form-label">💰 Costo (COP):</label>
+                    <input type="number" class="form-control" id="costo" placeholder="Ingresa el costo" required>
+                </div>
+
+                <button type="submit" class="btn btn-success">✅ Guardar</button>
+                <button type="button" class="btn btn-secondary" onclick="limpiarFormulario()">🧹 Limpiar</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Campo de búsqueda -->
+    <div class="card mb-3 col-md-8 mx-auto">
+        <label for="busquedaInventario"></label><input type="text" id="busquedaInventario" class="form-control"
+                                                       placeholder="Buscar inventarios..."
+                                                       oninput="filtrarInventarios()">
+    </div>
+
+    <!-- Tabla de inventarios -->
+    <h3 class="text-center mb-4">📋 Lista de Inventarios</h3>
+    <div class="card mb-4 col-md-8 mx-auto">
+        <table class="table table-bordered table-hover">
+            <thead class="table-light">
+            <tr>
+                <th onclick="ordenarTabla(0)">🆔 ID <i class="fa fa-sort"></i></th>
+                <th onclick="ordenarTabla(1)">📋 Item <i class="fa fa-sort"></i></th>
+                <th onclick="ordenarTabla(2)">🔢 Cantidad <i class="fa fa-sort"></i></th>
+                <th onclick="ordenarTabla(3)">💰 Costo <i class="fa fa-sort"></i></th>
+                <th>🛏️ Habitación</th>
+                <th>⚙️ Acciones</th>
+            </tr>
+            </thead>
+            <tbody id="tablaInventario"></tbody>
+        </table>
+    </div>
+    <p id="mensajeSinDatos" class="text-center text-muted d-none">No se encontraron inventarios.</p>
+</div>
+
+<div id="reportes-section" class="section content-section d-none container py-5">
+    <h2 class="text-center mb-4">📊 Reportes Mensuales</h2>
+
+    <!-- Selección del Año -->
+    <div class="row mb-4">
+        <div class="col-md-6 mx-auto">
+            <label for="anioSelect" class="form-label fs-5">Seleccione Año</label>
+            <select id="anioSelect" class="form-select form-select-lg" aria-label="Seleccione Año">
+                <option value="2024">2024</option>
+                <option value="2025">2025</option>
+            </select>
+        </div>
+    </div>
+
+    <!-- Gráfico de Ingresos Mensuales -->
+    <div class="card shadow-sm mb-5">
+        <div class="card-body">
+            <h5 class="card-title text-center mb-3">Gráfico De Ingresos Mensuales</h5>
+            <canvas id="graficoBarras" style="max-width: 100%; height: auto;"></canvas>
+        </div>
+    </div>
+
+    <!-- Gráfico de Ingresos Netos -->
+    <div class="card shadow-sm mb-5">
+        <div class="card-body">
+            <h5 class="card-title text-center mb-3">Gráfico de Ingresos, Gastos y Netos Por Habitación</h5>
+            <canvas id="graficoIngresosNetos" style="max-width: 100%; height: auto;"></canvas>
+        </div>
+    </div>
+
+    <!-- Resumen -->
+    <div class="row g-4">
+        <!-- Ingresos Totales -->
+        <div class="col-md-6 col-lg-3">
+            <div class="card text-center shadow border-0">
+                <div class="card-body">
+                    <h5 class="card-title text-muted">💰 Ingresos Totales</h5>
+                    <p id="ingresosTotales" class="fs-3 text-success fw-bold mb-0"></p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Ganancias Totales -->
+        <div class="col-md-6 col-lg-3">
+            <div class="card text-center shadow border-0">
+                <div class="card-body">
+                    <h5 class="card-title text-muted">📈 Ganancias Totales</h5>
+                    <p id="gananciasTotales" class="fs-3 text-success fw-bold mb-0"></p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Pérdidas Totales -->
+        <div class="col-md-6 col-lg-3">
+            <div class="card text-center shadow border-0">
+                <div class="card-body">
+                    <h5 class="card-title text-muted">📉 Pérdidas Totales</h5>
+                    <p id="perdidasTotales" class="fs-3 text-danger fw-bold mb-0"></p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Reservas Totales -->
+        <div class="col-md-6 col-lg-3">
+            <div class="card text-center shadow border-0">
+                <div class="card-body">
+                    <h5 class="card-title text-muted">📅 Reservas Totales</h5>
+                    <p id="reservasTotales" class="fs-3 text-primary fw-bold mb-0"></p>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Sección de Pagos de Empleados -->
+    <div class="row mt-5">
+        <div class="col-lg-8 col-md-10 mx-auto">
+            <div class="card shadow-lg border-0 rounded-3">
+                <div class="card-body">
+                    <!-- Título y Total de Pagos -->
+                    <div class="mb-4 text-center">
+                        <h5 class="card-title text-muted">💵 Pagos a Empleados</h5>
+                        <p id="pagosTotales" class="fs-3 text-success fw-bold mb-3"></p>
+                    </div>
+
+                    <!-- Tabla de Pagos -->
+                    <div class="table-responsive">
+                        <h5 class="card-title text-center text-muted mb-3">Lista de Pagos</h5>
+                        <table class="table table-striped align-middle">
+                            <thead class="table-light">
+                            <tr>
+                                <th scope="col">#</th>
+                                <th scope="col">Empleado</th>
+                                <th scope="col">Pago (COP)</th>
+                            </tr>
+                            </thead>
+                            <tbody id="pagosEmpleados">
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="js/bootstrap.bundle.min.js"></script>
+<script src="js/bootstrap.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<!-- Pie de Página -->
+<footer class="bg-dark text-white text-center py-4">
+    <p>Gestión de Hotel © 2024 - Todos los derechos reservados</p>
+</footer>
+
+<script>
+
+    // Array de URLs de las imágenes para el banner
+    const bannerImages = [
+        'img/imagen1.jpg',
+        'img/imagen2.jpg',
+        'img/imagen6.jpg',
+        'img/imagen4.jpg',
+        'img/imagen3.jpg',
+        'img/imagen7.jpeg',
+        'img/imagen5.jpg',
+        'img/hotel.jpeg'
+    ];
+
+    // Función para cambiar la imagen del banner cada 20 segundos
+    function changeBannerImage() {
+        let index = 0;
+        const banner = document.getElementById('banner');
+
+        setInterval(() => {
+            banner.style.backgroundImage = `url('${bannerImages[index]}')`;
+            index = (index + 1) % bannerImages.length; // Volver al primer elemento al finalizar
+        }, 10000); // Cambia cada 10000 ms = 10 segundos
+    }
+
+     // Inicializa el cambio de imagen en el banner cuando la página carga
+    window.onload = () => {
+         changeBannerImage();
+    };
+
+    // Mostrar la sección de información del hotel al cargar la página
+    window.onload = () => {
+        document.getElementById('hotel-section').classList.remove('d-none');
+        changeBannerImage(); // Llama la función para empezar el cambio de imagen
+    };
+
+
+     function toggleSection(sectionId) {
+        const allSections = document.querySelectorAll('.content-section');
+        const mainSection = document.getElementById('main-section');
+
+        // Ocultar todas las secciones
+        allSections.forEach(section => {
+            section.classList.add('d-none');
+        });
+
+        // Mostrar la sección seleccionada
+        const selectedSection = document.getElementById(sectionId);
+        if (selectedSection) {
+            selectedSection.classList.remove('d-none');
+        }
+
+        // Ocultar el contenedor principal (main-section) si no estamos en la sección del hotel
+        if (sectionId === 'hotel-section') {
+            mainSection.classList.remove('d-none');
+        } else {
+            mainSection.classList.add('d-none');
+        }
+
+        // Llamar a funciones específicas para cargar datos según la sección seleccionada
+        switch (sectionId) {
+            case 'empleados-section':
+                obtenerEmpleados();
+                break;
+            case 'habitaciones-section':
+                mostrarHabitaciones();
+                break;
+            case 'reservas-section':
+                obtenerReservas();
+                break;
+            case 'clientes-section':
+                obtenerClientes();
+                break;
+            case 'inventarios-section':
+                cargarInventarios();
+                break;
+            case 'reportes-section':
+                cargarReportes();
+                break;
+            default:
+                break;
+        }
+    }
+
+   // URL de la aplicación Web
+    const BASE_URL = 'http://localhost:8080/api/v1';
+
+    function mostrarSeccionClientes() {
+        ocultarSecciones();
+        document.getElementById('clientes-section').classList.remove('d-none');
+        document.getElementById('clientes-section').classList.add('d-block');
+    }
+
+    function mostrarSeccionEmpleados() {
+        ocultarSecciones();
+        document.getElementById('empleados-section').classList.remove('d-none');
+        document.getElementById('empleados-section').classList.add('d-block');
+    }
+
+    function ocultarSecciones() {
+        document.getElementById('clientes-section').classList.add('d-none');
+        document.getElementById('clientes-section').classList.remove('d-block');
+        document.getElementById('empleados-section').classList.add('d-none');
+        document.getElementById('empleados-section').classList.remove('d-block');
+    }
+
+
+    function volverMenu() {
+        ocultarSecciones();
+        document.getElementById('chatbot').style.display = 'block';
+    }
+
+    // Mostrar clientes y cargar la lista
+    function mostrarClientes() {
+         ocultarSecciones(); // Oculta otras secciones si tienes más de una en tu aplicación
+         document.getElementById('clientes-section').style.display = 'block';
+         obtenerClientes();
+    }
+
+    // Genera la tarjeta HTML para un cliente
+    function generarTarjetaCliente(cliente) {
+        return `
+            <div class="col-12 col-md-4">
+                <div class="card mb-4">
+                    <div class="card-body">
+                        <p><strong>${cliente.nombre} ${cliente.apellido}</strong></p>
+                        <p>${cliente.correoElectronico}</p>
+                        <p>${cliente.telefono}</p>
+                        <div class="card-buttons d-flex justify-content-start">
+                            <button class="btn btn-danger btn-sm" onclick="eliminarCliente(${cliente.id})">Eliminar</button>
+                            <button class="btn btn-warning btn-sm" onclick="cargarCliente(${cliente.id})">Actualizar</button>
+                        </div>
+                    </div>
+                </div>
+            </div>`;
+    }
+
+    // Obtener Clientes
+    function obtenerClientes() {
+        axios.get(`${BASE_URL}/clientes/obtener`)
+             .then(response => {
+                 const clientesList = document.getElementById('clientes-list');
+                 clientesList.innerHTML = '';
+                 response.data.forEach(cliente => {
+                     clientesList.innerHTML += generarTarjetaCliente(cliente);
+                 });
+             })
+             .catch(error => {
+                 console.error('Error al obtener clientes:', error);
+             });
+    }
+
+    // Crear Cliente
+    function crearCliente() {
+          const cliente = {
+              nombre: document.getElementById('clienteNombre').value,
+              apellido: document.getElementById('clienteApellido').value,
+              correoElectronico: document.getElementById('clienteCorreoElectronico').value,
+              telefono: document.getElementById('clienteTelefono').value
+          };
+
+          axios.post(`${BASE_URL}/clientes/crear`, cliente)
+              .then(response => {
+                  alert(response.data);
+                  obtenerClientes();
+                  document.getElementById('clienteForm').reset();
+              })
+              .catch(error => {
+                  console.error(error);
+                  alert('Error al crear el cliente');
+              });
+    }
+
+
+      // Eliminar Cliente
+    function eliminarCliente(clienteId) {
+          axios.delete(`${BASE_URL}/clientes/eliminar/${clienteId}`)
+              .then(response => {
+                  alert(response.data);
+                  obtenerClientes();
+              })
+              .catch(error => {
+                  console.error(error);
+                  alert('Error al eliminar cliente');
+              });
+    }
+
+    // Cargar Cliente para Actualizar
+    function cargarCliente(clienteId) {
+          axios.get(`${BASE_URL}/clientes/obtener/${clienteId}`)
+              .then(response => {
+                  const cliente = response.data;
+                  document.getElementById('clienteNombre').value = cliente.nombre;
+                  document.getElementById('clienteApellido').value = cliente.apellido;
+                  document.getElementById('clienteCorreoElectronico').value = cliente.correoElectronico;
+                  document.getElementById('clienteTelefono').value = cliente.telefono;
+
+                  const clienteForm = document.getElementById('clienteForm');
+                  clienteForm.onsubmit = function(event) {
+                      event.preventDefault();
+                      actualizarCliente(clienteId);
+                  };
+              })
+              .catch(error => {
+                  console.error(error);
+                  alert('Error al cargar cliente');
+              });
+    }
+
+     // Actualizar Cliente
+    function actualizarCliente(clienteId) {
+          const cliente = {
+              nombre: document.getElementById('clienteNombre').value,
+              apellido: document.getElementById('clienteApellido').value,
+              correoElectronico: document.getElementById('clienteCorreoElectronico').value,
+              telefono: document.getElementById('clienteTelefono').value
+          };
+
+          axios.put(`${BASE_URL}/clientes/actualizar/${clienteId}`, cliente)
+              .then(response => {
+                  alert(response.data);
+                  obtenerClientes();
+                  document.getElementById('clienteForm').reset();
+                  document.getElementById('clienteForm').onsubmit = function(event) {
+                      event.preventDefault();
+                      crearCliente();
+                  };
+              })
+              .catch(error => {
+                  console.error(error);
+                  alert('Error al actualizar cliente');
+              });
+    }
+
+   function buscarClientePorId() {
+      const clienteId = document.getElementById('clienteId').value;
+
+      axios.get(`${BASE_URL}/clientes/obtener/${clienteId}`)
+          .then(response => {
+              const cliente = response.data;
+              const clienteDetalle = document.getElementById('clienteDetalle');
+
+              clienteDetalle.innerHTML = `
+                  <div class="card">
+                      <div class="card-header">Detalles del Cliente</div>
+                      <div class="card-body">
+                          <p><strong>Nombre Completo:</strong> ${cliente.nombre} ${cliente.apellido}</p>
+                          <p><strong>Email:</strong> ${cliente.correoElectronico}</p>
+                          <p><strong>Teléfono:</strong> ${cliente.telefono}</p>
+                          <div class="card-buttons d-flex justify-content-start">
+                              <button class="btn btn-danger btn-sm" onclick="eliminarCliente(${cliente.id})">Eliminar</button>
+                              <button class="btn btn-warning btn-sm" onclick="cargarCliente(${cliente.id})">Actualizar</button>
+                          </div>
+                      </div>
+                  </div>`;
+          })
+          .catch(error => {
+              console.error('Error al obtener cliente:', error);
+              const clienteDetalle = document.getElementById('clienteDetalle');
+              clienteDetalle.innerHTML = `<p class="text-danger">Cliente no encontrado.</p>`;
+          });
+  }
+
+  // Cargar todos los clientes al iniciar
+  document.addEventListener('DOMContentLoaded', obtenerClientes);
+
+
+  // Mostrar empleados
+   function mostrarEmpleados() {
+        toggleSection('empleados-section');
+   }
+
+  // Obtener todos los empleados
+   function obtenerEmpleados() {
+        axios.get(`${BASE_URL}/empleados/obtener`)
+            .then(response => {
+                const empleadosList = document.getElementById('empleados-list');
+                empleadosList.innerHTML = '';
+                response.data.forEach(empleado => {
+                  empleadosList.innerHTML += `
+                      <div class="col-12 col-md-4">
+                          <div class="card mb-4">
+                              <div class="card-body">
+                                  <p><strong>${empleado.nombre} ${empleado.apellido}</strong> (${empleado.rol})</p>
+                                  <p>${empleado.correoElectronico}</p>
+                                  <div class="card-buttons d-flex justify-content-start">
+                                      <button class="btn btn-danger btn-sm" onclick="eliminarEmpleado(${empleado.id})">Eliminar</button>
+                                      <button class="btn btn-warning btn-sm" onclick="editarEmpleado(${empleado.id}, '${empleado.nombre}', '${empleado.apellido}', '${empleado.correoElectronico}', '${empleado.rol}')">Actualizar</button>
+                                  </div>
+                              </div>
+                          </div>
+                      </div>`;
+              });
+            })
+            .catch(error => {
+                console.error('Error al obtener empleados:', error);
+                alert('Error al obtener empleados');
+            });
+    }
+
+  // Crear un nuevo empleado
+  function crearEmpleado() {
+        const empleado = {
+            nombre: document.getElementById('empleadoNombre').value,
+            apellido: document.getElementById('empleadoApellido').value,
+            correoElectronico: document.getElementById('empleadoCorreoElectronico').value,
+            rol: document.getElementById('empleadoRol').value // Agregar rol aquí
+        };
+
+        axios.post(`${BASE_URL}/empleados/crear`, empleado)
+            .then(response => {
+                alert(response.data);
+                obtenerEmpleados();
+                document.getElementById('empleadoForm').reset();
+            })
+            .catch(error => {
+                console.error('Error al crear el empleado:', error);
+                alert('Error al crear el empleado');
+            });
+  }
+
+   // Eliminar un empleado
+  function eliminarEmpleado(empleadoId) {
+        axios.delete(`${BASE_URL}/empleados/eliminar/${empleadoId}`)
+            .then(response => {
+                alert(response.data);
+                obtenerEmpleados();
+            })
+            .catch(error => {
+                console.error('Error al eliminar el empleado:', error);
+                alert('Error al eliminar el empleado');
+            });
+  }
+
+  //Editar un empleado
+   function editarEmpleado(id, nombre, apellido, correo, rol) {
+        // Completar los campos del formulario con la información del empleado
+        document.getElementById('empleadoNombre').value = nombre;
+        document.getElementById('empleadoApellido').value = apellido;
+        document.getElementById('empleadoCorreoElectronico').value = correo;
+        document.getElementById('empleadoRol').value = rol; // Nuevo campo para rol
+
+        // Cambiar el evento del botón de guardar para que actualice en lugar de crear
+        const empleadoForm = document.getElementById('empleadoForm');
+        empleadoForm.onsubmit = function() {
+            actualizarEmpleado(id);
+            return false;
+        };
+   }
+
+  // Actualizar un empleado
+  function actualizarEmpleado(id) {
+        const empleado = {
+            nombre: document.getElementById('empleadoNombre').value,
+            apellido: document.getElementById('empleadoApellido').value,
+            correoElectronico: document.getElementById('empleadoCorreoElectronico').value,
+            rol: document.getElementById('empleadoRol').value // Agregar rol aquí
+        };
+
+        axios.put(`${BASE_URL}/empleados/actualizar/${id}`, empleado)
+            .then(response => {
+                alert(response.data);
+                obtenerEmpleados();
+                document.getElementById('empleadoForm').reset();
+                // Resetear el evento del formulario para crear un nuevo empleado
+                document.getElementById('empleadoForm').onsubmit = function() {
+                    crearEmpleado();
+                    return false;
+                };
+            })
+            .catch(error => {
+                console.error('Error al actualizar el empleado:', error);
+                alert('Error al actualizar el empleado');
+            });
+  }
+
+  //Buscar empleados por rol
+  function buscarEmpleadosPorRol() {
+      const rol = document.getElementById('rolBusquedaInput').value;
+
+      // Solicita a la API los empleados con el rol ingresado
+      axios.get(`${BASE_URL}/empleados/obtener/rol/${rol}`)
+          .then(response => {
+              const resultadoBusquedaRol = document.getElementById('resultadoBusquedaRol');
+              resultadoBusquedaRol.innerHTML = ''; // Limpia el contenido anterior
+
+              // Verifica si hay empleados con el rol buscado
+              if (Array.isArray(response.data) && response.data.length > 0) {
+                  response.data.forEach(empleado => {
+                      resultadoBusquedaRol.innerHTML += `
+                       <div class="col-12 col-md-4">
+                          <div class="card mb-4">
+                              <div class="card-header">Detalles del Empleado</div>
+                              <div class="card-body">
+                                  <p><strong>${empleado.nombre} ${empleado.apellido}</strong> (${empleado.rol})</p>
+                                  <p>${empleado.correoElectronico}</p>
+                                  <div class="card-buttons d-flex justify-content-start">
+                                      <button class="btn btn-danger btn-sm" onclick="eliminarEmpleado(${empleado.id})">Eliminar</button>
+                                      <button class="btn btn-warning btn-sm" onclick="editarEmpleado(${empleado.id}, '${empleado.nombre}', '${empleado.apellido}', '${empleado.correoElectronico}', '${empleado.rol}')">Actualizar</button>
+                                  </div>
+                              </div>
+                         </div>
+                      </div>`;
+                  });
+              } else {
+                  resultadoBusquedaRol.innerHTML = `<div class="list-group-item">No se encontraron empleados con el rol especificado.</div>`;
+              }
+          })
+          .catch(error => {
+              console.error('Error al buscar empleados:', error);
+              alert('Error al buscar empleados');
+          });
+  }
+
+
+   // Inicializar y cargar los empleados al cargar la página
+    document.addEventListener('DOMContentLoaded', function() {
+        obtenerEmpleados();
+    });
+
+  function mostrarHabitaciones() {
+        obtenerHabitaciones();
+  }
+
+  // Obtener todas las habitaciones
+   function obtenerHabitaciones() {
+        axios.get(`${BASE_URL}/habitaciones/obtener`)
+            .then(response => {
+                const habitacionesList = document.getElementById('habitaciones-list');
+                habitacionesList.innerHTML = '';
+                response.data.forEach(habitacion => {
+                    habitacionesList.innerHTML += `
+                        <div class="col-md-4">
+                            <div class="card mb-4">
+                                <img src="${habitacion.imagenUrl}" class="card-img-top" alt="Imagen de ${habitacion.tipo}">
+                                <div class="card-body">
+                                    <h5 class="card-title">${habitacion.tipo}</h5>
+                                    <p class="card-text">Capacidad: ${habitacion.capacidad} personas</p>
+                                    <p class="font-weight-bold">Precio: $${habitacion.precioPorNoche} por noche</p>
+                                    <p class="font-weight-bold">Disponible: ${habitacion.disponible ? 'Sí' : 'No'}</p>
+                                    <div class="card-buttons d-flex justify-content-start">
+                                        <button class="btn btn-danger btn-sm"  onclick="eliminarHabitacion(${habitacion.id})">Eliminar</button>
+                                        <button class="btn btn-warning btn-sm" onclick="cargarHabitacion(${habitacion.id})">Actualizar</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>`;
+                });
+            })
+            .catch(error => {
+                console.error('Error al obtener habitaciones:', error);
+            });
+  }
+
+  // Crear una nueva habitación
+   function crearHabitacion() {
+        const habitacion = {
+            tipo: document.getElementById('habitacionTipo').value,
+            capacidad: document.getElementById('habitacionCapacidad').value,
+            precioPorNoche: document.getElementById('habitacionPrecio').value,
+            imagenUrl: document.getElementById('habitacionImagen').value,
+            disponible: document.getElementById('habitacionDisponible').checked // Obtener el valor del checkbox
+        };
+
+        axios.post(`${BASE_URL}/habitaciones/crear`, habitacion)
+            .then(response => {
+                alert(response.data);
+                obtenerHabitaciones();
+                document.getElementById('habitacionForm').reset();
+            })
+            .catch(error => {
+                console.error('Error al crear la habitación:', error);
+                alert('Error al crear la habitación');
+            });
+   }
+
+   // Eliminar una habitación
+   function eliminarHabitacion(habitacionId) {
+        axios.delete(`${BASE_URL}/habitaciones/eliminar/${habitacionId}`)
+            .then(response => {
+                alert(response.data);
+                obtenerHabitaciones();
+            })
+            .catch(error => {
+                console.error('Error al eliminar la habitación:', error);
+                alert('Error al eliminar la habitación');
+            });
+   }
+
+   // Cargar los datos de una habitación para actualizarla
+   function cargarHabitacion(habitacionId) {
+        axios.get(`${BASE_URL}/habitaciones/obtener/${habitacionId}`)
+            .then(response => {
+                const habitacion = response.data;
+                document.getElementById('habitacionTipo').value = habitacion.tipo;
+                document.getElementById('habitacionCapacidad').value = habitacion.capacidad;
+                document.getElementById('habitacionPrecio').value = habitacion.precioPorNoche;
+                document.getElementById('habitacionImagen').value = habitacion.imagenUrl; // Cargar la URL de la imagen
+
+                const habitacionForm = document.getElementById('habitacionForm');
+                habitacionForm.onsubmit = function(event) {
+                    event.preventDefault();
+                    actualizarHabitacion(habitacionId);
+                };
+            })
+            .catch(error => {
+                console.error('Error al cargar la habitación:', error);
+                alert('Error al cargar la habitación');
+            });
+   }
+
+   // Actualizar los datos de una habitación
+   function actualizarHabitacion(habitacionId) {
+        const habitacion = {
+            tipo: document.getElementById('habitacionTipo').value,
+            capacidad: document.getElementById('habitacionCapacidad').value,
+            precioPorNoche: document.getElementById('habitacionPrecio').value,
+            imagenUrl: document.getElementById('habitacionImagen').value,
+            disponible: document.getElementById('habitacionDisponible').checked // Obtener el valor del checkbox
+        };
+
+        axios.put(`${BASE_URL}/habitaciones/actualizar/${habitacionId}`, habitacion)
+            .then(response => {
+                alert(response.data);
+                obtenerHabitaciones();
+                document.getElementById('habitacionForm').reset();
+                document.getElementById('habitacionForm').onsubmit = function(event) {
+                    event.preventDefault();
+                    crearHabitacion();
+                };
+            })
+            .catch(error => {
+                console.error('Error al actualizar la habitación:', error);
+                alert('Error al actualizar la habitación');
+            });
+   }
+
+   // Buscar habitación por ID
+    function buscarHabitacion() {
+          const habitacionId = document.getElementById('habitacionId').value;
+          const resultadoBusqueda = document.getElementById('resultado-busqueda-habitacion');
+          const detalleHabitacion = document.getElementById('detalleHabitacion');
+
+          // Verifica que el ID no esté vacío
+          if (!habitacionId) {
+              alert('Por favor, ingrese un ID válido');
+              return;
+          }
+
+          // Realiza la solicitud GET
+          axios.get(`${BASE_URL}/habitaciones/obtener/${habitacionId}`)
+              .then(response => {
+                  console.log(response.data); // Verifica los datos recibidos
+                  if (!response.data) {
+                      alert('No se encontró una habitación con ese ID');
+                      resultadoBusqueda.classList.add('d-none'); // Oculta los resultados si no se encuentra la habitación
+                      return;
+                  }
+
+                  const habitacion = response.data;
+                  detalleHabitacion.innerHTML = `
+                      <div class="col-md-4">
+                          <div class="card mb-4">
+                              <img src="${habitacion.imagenUrl}" class="card-img-top" alt="Imagen de ${habitacion.tipo}">
+                              <div class="card-body">
+                                  <h5 class="card-title">${habitacion.tipo}</h5>
+                                  <p class="card-text">Capacidad: ${habitacion.capacidad} personas</p>
+                                  <p class="font-weight-bold">Precio: $${habitacion.precioPorNoche} por noche</p>
+                                  <p class="font-weight-bold">Disponible: ${habitacion.disponible ? 'Sí' : 'No'}</p>
+                                  <div class="card-buttons d-flex justify-content-start">
+                                      <button class="btn btn-danger btn-sm" onclick="eliminarHabitacion(${habitacion.id})">Eliminar</button>
+                                      <button class="btn btn-warning btn-sm" onclick="cargarHabitacion(${habitacion.id})">Actualizar</button>
+                                  </div>
+                              </div>
+                          </div>
+                      </div>`;
+                  resultadoBusqueda.classList.remove('d-none'); // Muestra el resultado
+              })
+              .catch(error => {
+                  console.error('Error al obtener la habitación:', error);
+              });
+    }
+
+
+   // Buscar habitaciones por tipo
+    function buscarHabitacionesPorTipo() {
+         const habitacionTipo = document.getElementById('habitacionTipoBusqueda').value;
+
+         if (!habitacionTipo) {
+             alert('Por favor, ingrese un tipo de habitación');
+             return;
+         }
+
+         axios.get(`${BASE_URL}/habitaciones/obtener/tipo/${habitacionTipo}`)
+             .then(response => {
+                 const resultadoBusquedaTipo = document.getElementById('resultado-busqueda-tipo');
+                 resultadoBusquedaTipo.innerHTML = '';  // Limpiar el contenido actual
+
+                 if (response.data.length === 0) {
+                     resultadoBusquedaTipo.innerHTML = '<p class="text-center text-muted">No se encontraron habitaciones para el tipo ingresado.</p>';
+                 } else {
+                     response.data.forEach(habitacion => {
+                         resultadoBusquedaTipo.innerHTML += `
+                            <div class="col-md-4">
+                               <div class="card mb-4">
+                                   <img src="${habitacion.imagenUrl}" class="card-img-top" alt="Imagen de ${habitacion.tipo}">
+                                   <div class="card-body">
+                                       <h5 class="card-title">${habitacion.tipo}</h5>
+                                       <p class="card-text">Capacidad: ${habitacion.capacidad} personas</p>
+                                       <p class="font-weight-bold">Precio: $${habitacion.precioPorNoche} por noche</p>
+                                       <p class="font-weight-bold">Disponible: ${habitacion.disponible ? 'Sí' : 'No'}</p>
+                                       <div class="card-buttons d-flex justify-content-start">
+                                           <button class="btn btn-danger btn-sm"  onclick="eliminarHabitacion(${habitacion.id})">Eliminar</button>
+                                           <button class="btn btn-warning btn-sm" onclick="cargarHabitacion(${habitacion.id})">Actualizar</button>
+                                       </div>
+                                   </div>
+                               </div>
+                           </div>`;
+                     });
+                 }
+             })
+             .catch(error => {
+                 console.error('Error al obtener habitaciones por tipo:', error);
+                 alert('Error al obtener habitaciones por tipo');
+             });
+    }
+
+  // Inicializar y cargar las habitaciones al cargar la página
+  document.addEventListener('DOMContentLoaded', mostrarHabitaciones);
+
+
+  // Mostrar reservas y cargar la lista
+   function mostrarReservas() {
+       ocultarSecciones();  // Oculta otras secciones si tienes otras además de la de reservas
+       document.getElementById('reservas-section').style.display = 'block';
+       obtenerReservas();
+   }
+
+    // Obtener las reservas
+     function obtenerReservas() {
+          axios.get(`${BASE_URL}/reservas/obtener`)
+             .then(response => {
+                  const reservasList = document.getElementById('reservas-list');
+                  reservasList.innerHTML = '';
+                        response.data.forEach(reserva => {
+                           reservasList.innerHTML += `
+                               <div class="col-md-4">
+                                   <div class="card mb-4">
+                                       <div class="card-body">
+                                           <p><strong>Reserva ID:</strong> ${reserva.id}</p>
+                                           <p><strong>Nombre Cliente:</strong> ${reserva.cliente.nombre} ${reserva.cliente.apellido}</p>
+                                           <p><strong>Nombre Empleado:</strong> ${reserva.empleado.nombre} ${reserva.empleado.apellido}</p>
+                                           <p><strong>Habitación ID:</strong> ${reserva.habitacion.id}</p>
+                                           <p><strong>Desde:</strong> ${reserva.fechaIngreso} <strong>Hasta:</strong> ${reserva.fechaSalida}</p>
+                                           <p><strong>Total (COP):</strong> $${reserva.total}</p>
+                                           <div class="card-buttons d-flex justify-content-start">
+                                               <button class="btn btn-danger btn-sm"  onclick="eliminarReserva(${reserva.id})">Eliminar</button>
+                                               <button class="btn btn-warning btn-sm"  onclick="editarReserva(${reserva.id})">Actualizar</button>
+                                           </div>
+                                      </div>
+                                  </div>
+                              </div>`;
+                       });
+                })
+               .catch(error => {
+                   console.error("Error al obtener reservas:", error);
+                   alert("Hubo un problema al cargar las reservas.");
+               });
+    }
+
+     // Eliminar una reserva
+     function eliminarReserva(id) {
+         axios.delete(`${BASE_URL}/reservas/eliminar/${id}`)
+               .then(response => {
+                  alert(response.data);
+                  obtenerReservas();
+              })
+              .catch(error => {
+                 console.error('Error al eliminar la reserva:', error);
+                 alert('Error al eliminar la reserva');
+              });
+     }
+
+      // Editar una reserva
+      function editarReserva(id) {
+         axios.get(`${BASE_URL}/reservas/obtener/${id}`)
+              .then(response => {
+                    const reserva = response.data;
+                    document.getElementById('reservaId').value = reserva.id;
+                    document.getElementById('reservaClienteId').value = reserva.cliente.id;
+                    document.getElementById('reservaHabitacionId').value = reserva.habitacion.id;
+                    document.getElementById('reservaEmpleadoId').value = reserva.empleado.id;
+                    document.getElementById('reservaFechaInicio').value = reserva.fechaIngreso;
+                    document.getElementById('reservaFechaFin').value = reserva.fechaSalida;
+                    document.getElementById('reservaTotal').value = reserva.total;
+                    document.getElementById('accionReservaBtn').innerText = 'Actualizar Reserva';
+                })
+                .catch(error => {
+                      console.error('Error al editar la reserva:', error);
+                      alert('Error al editar la reserva');
+                });
+      }
+
+      // Crear o actualizar una reserva
+      function crearReserva() {
+              const reservaId = document.getElementById('reservaId').value;
+              const reservaData = {
+                  cliente: { id: document.getElementById('reservaClienteId').value },
+                  habitacion: { id: document.getElementById('reservaHabitacionId').value },
+                  empleado: { id: document.getElementById('reservaEmpleadoId').value },
+                  fechaIngreso: document.getElementById('reservaFechaInicio').value,
+                  fechaSalida: document.getElementById('reservaFechaFin').value,
+                  total: parseFloat(document.getElementById('reservaTotal').value)
+              };
+
+              if (reservaId) {
+                  axios.put(`${BASE_URL}/reservas/actualizar/${reservaId}`, reservaData)
+                      .then(response => {
+                          alert("Reserva actualizada correctamente");
+                          document.getElementById('reservaForm').reset();
+                          obtenerReservas();
+                          document.getElementById('accionReservaBtn').innerText = 'Crear Reserva';
+                      })
+                      .catch(error => {
+                          console.error("Error al actualizar la reserva:", error);
+                          alert("Error al actualizar la reserva");
+                      });
+              } else {
+                  axios.post(`${BASE_URL}/reservas/crear`, reservaData)
+                      .then(response => {
+                          alert("Reserva creada correctamente");
+                          document.getElementById('reservaForm').reset();
+                          obtenerReservas();
+                      })
+                      .catch(error => {
+                          console.error("Error al crear la reserva:", error);
+                          alert("Error al crear la reserva");
+                      });
+              }
+      }
+
+      // Función para mostrar los resultados de búsqueda
+      function mostrarResultadosDeBusqueda(data) {
+          const resultadosBusqueda = document.getElementById('resultados-busqueda');
+          resultadosBusqueda.innerHTML = ''; // Limpiar lista de resultados anteriores
+
+          const reservas = Array.isArray(data) ? data : [data]; // Asegurarse de que sea un array
+
+          if (reservas.length === 0) {
+              resultadosBusqueda.innerHTML = "<p>No se encontraron reservas.</p>";
+              return;
+          }
+
+          reservas.forEach(reserva => {
+              resultadosBusqueda.innerHTML += `
+                  <div class="card mb-3">
+                      <div class="card-body">
+                          <div class="list-group-item">
+                              <div class="d-flex align-items-center">
+                                  <div>
+                                      <p><strong>Reserva ID:</strong> ${reserva.id}</p>
+                                      <p><strong>Cliente:</strong> ${reserva.cliente.nombre} ${reserva.cliente.apellido}</p>
+                                      <p><strong>Empleado:</strong> ${reserva.empleado.nombre} ${reserva.empleado.apellido}</p>
+                                      <p><strong>Habitación ID:</strong> ${reserva.habitacion.id}</p>
+                                      <p><strong>Desde:</strong> ${reserva.fechaIngreso} <strong>Hasta:</strong> ${reserva.fechaSalida}</p>
+                                      <p><strong>Total (COP):</strong> $${reserva.total}</p>
+                                      <div class="card-buttons d-flex justify-content-start">
+                                          <button class="btn btn-danger btn-sm"  onclick="eliminarReserva(${reserva.id})">Eliminar</button>
+                                          <button class="btn btn-warning btn-sm"  onclick="editarReserva(${reserva.id})">Actualizar</button>
+                                      </div>
+                                  </div>
+                              </div>
+                          </div>
+                      </div>
+                  </div>`;
+          });
+      }
+
+      // Función para buscar por ID de reserva
+      function buscarReservaPorId() {
+          const reservaId = document.getElementById('busquedaId').value;
+          if (!reservaId) {
+              alert("Por favor ingresa el ID de la reserva.");
+              return;
+          }
+          axios.get(`${BASE_URL}/reservas/obtener/${reservaId}`)
+              .then(response => {
+                  mostrarResultadosDeBusqueda(response.data);
+              })
+              .catch(error => {
+                  console.error("Error al buscar reserva por ID:", error);
+                  alert("No se encontró la reserva.");
+              });
+      }
+
+      // Función para buscar por ID de empleado
+      function buscarReservaPorEmpleado() {
+          const empleadoId = document.getElementById('busquedaEmpleadoId').value;
+          if (!empleadoId) {
+              alert("Por favor ingresa el ID del empleado.");
+              return;
+          }
+          axios.get(`${BASE_URL}/reservas/empleado/${empleadoId}`)
+              .then(response => {
+                  mostrarResultadosDeBusqueda(response.data);
+              })
+              .catch(error => {
+                  console.error("Error al buscar reservas por empleado:", error);
+                  alert("No se encontraron reservas para este empleado.");
+              });
+      }
+
+    // Función para buscar por ID de cliente
+     function buscarReservaPorCliente() {
+          const clienteId = document.getElementById('busquedaClienteId').value;
+          if (!clienteId) {
+              alert("Por favor ingresa el ID del cliente.");
+              return;
+          }
+          axios.get(`${BASE_URL}/reservas/cliente/${clienteId}`)
+              .then(response => {
+                  mostrarResultadosDeBusqueda(response.data);
+              })
+              .catch(error => {
+                  console.error("Error al buscar reservas por cliente:", error);
+                  alert("No se encontraron reservas para este cliente.");
+              });
+     }
+
+     // Ocultar todas las secciones
+     function ocultarSecciones() {
+       document.getElementById('reservas-section').style.display = 'none';
+     }
+
+     document.addEventListener('DOMContentLoaded', () => {
+            const anioSelect = document.getElementById('anioSelect');
+
+            // Cargar los reportes al iniciar
+            cargarReportes();
+
+            // Escuchar el cambio en el selector de año
+            anioSelect.addEventListener('change', cargarReportes);
+     });
+
+     function crearGraficoBarra(ctx, etiquetas, datasets, titulo) {
+        if (window[ctx]) window[ctx].destroy();
+
+        window[ctx] = new Chart(document.getElementById(ctx).getContext('2d'), {
+            type: 'bar',
+            data: { labels: etiquetas, datasets },
+            options: {
+                responsive: true,
+                plugins: {
+                    title: { display: true, text: titulo, font: { size: 16 } },
+                    tooltip: { callbacks: { label: item => `${item.raw.toLocaleString()} COP` } }
+                },
+                scales: {
+                    y: { beginAtZero: true, title: { display: true, text: 'Monto (COP)' } },
+                    x: { title: { display: true, text: 'Meses/Habitaciones' } }
+                }
+            }
+        });
+    }
+
+     async function cargarReportes() {
+        const ingresosTotalesEl = document.getElementById('ingresosTotales');
+        const reservasTotalesEl = document.getElementById('reservasTotales');
+        const gananciasTotalesEl = document.getElementById('gananciasTotales');
+        const perdidasTotalesEl = document.getElementById('perdidasTotales');
+        const ctxBarras = document.getElementById('graficoBarras').getContext('2d');
+        const ctxNetos = document.getElementById('graficoIngresosNetos').getContext('2d');
+        const anioSeleccionado = document.getElementById('anioSelect').value;
+
+        try {
+            // Obtener reporte de ingresos mensuales
+            const responseIngresos = await fetch(`http://localhost:8080/api/v1/reportes/ingresos/anio?anio=${anioSeleccionado}`);
+            if (!responseIngresos.ok) throw new Error('Error al cargar ingresos mensuales.');
+
+            const reporteIngresos = await responseIngresos.json();
+
+            // Mostrar datos totales
+            ingresosTotalesEl.textContent = `${reporteIngresos.ingresosTotales.toLocaleString()} COP`;
+            reservasTotalesEl.textContent = reporteIngresos.reservasTotales;
+
+            // Configuración del gráfico de ingresos mensuales
+            const etiquetas = reporteIngresos.reporteMensual.map(item => item.mes);
+            const datosIngresos = reporteIngresos.reporteMensual.map(item => item.ingresos);
+
+            if (window.miGraficoBarras) window.miGraficoBarras.destroy();
+            window.miGraficoBarras = new Chart(ctxBarras, {
+                type: 'bar',
+                data: {
+                    labels: etiquetas,
+                    datasets: [{
+                        label: 'Ingresos Mensuales (COP)',
+                        data: datosIngresos,
+                        backgroundColor: '#36A2EB',
+                        borderColor: '#2B81C2',
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        title: {
+                            display: true,
+                            text: `Ingresos Mensuales (${anioSeleccionado})`,
+                            font: { size: 16 }
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: tooltipItem =>
+                                    `Ingresos: ${tooltipItem.raw.toLocaleString()} COP`
+                            }
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            title: { display: true, text: 'Ingresos (COP)' },
+                            ticks: { callback: value => `${value.toLocaleString()} COP` }
+                        },
+                        x: { title: { display: true, text: 'Meses' } }
+                    }
+                }
+            });
+
+            // Obtener ganancias y pérdidas
+            const responseGananciasYPerdidas = await fetch('http://localhost:8080/api/v1/reportes/perdidas-y-ganancias');
+            if (!responseGananciasYPerdidas.ok) throw new Error('Error al cargar ganancias y pérdidas.');
+
+            const reporteGananciasYPerdidas = await responseGananciasYPerdidas.json();
+
+            // Mostrar resultados de ganancias y pérdidas
+            gananciasTotalesEl.textContent = `${reporteGananciasYPerdidas.gananciasTotales.toLocaleString()} COP`;
+            perdidasTotalesEl.textContent = `${reporteGananciasYPerdidas.perdidasTotales.toLocaleString()} COP`;
+
+            // Configuración del gráfico de ingresos netos por habitación
+            const responseNetos = await fetch('http://localhost:8080/api/v1/reportes/ingresosNetos');
+            if (!responseNetos.ok) throw new Error('Error al cargar ingresos netos.');
+
+            const reporteNetos = await responseNetos.json();
+
+            // Configuración del gráfico de ingresos netos por habitación
+            const etiquetasNetos = reporteNetos.map(item => `Habitación ${item.habitacionId} (${item.tipo})`);
+            const datosIngresosNetos = reporteNetos.map(item => item.ingresos);
+            const datosGastos = reporteNetos.map(item => item.gastos);
+            const datosNetos = reporteNetos.map(item => item.ingresosNetos);
+
+            if (window.miGraficoNetos) window.miGraficoNetos.destroy();
+            window.miGraficoNetos = new Chart(ctxNetos, {
+                type: 'bar',
+                data: {
+                    labels: etiquetasNetos,
+                    datasets: [
+                        {
+                            label: 'Ingresos (COP)',
+                            data: datosIngresosNetos,
+                            backgroundColor: '#4BC0C0',
+                            borderColor: '#36A2EB',
+                            borderWidth: 1
+                        },
+                        {
+                            label: 'Gastos (COP)',
+                            data: datosGastos,
+                            backgroundColor: '#FF6384',
+                            borderColor: '#D2526A',
+                            borderWidth: 1
+                        },
+                        {
+                            label: 'Ingresos Netos (COP)',
+                            data: datosNetos,
+                            backgroundColor: '#9966FF',
+                            borderColor: '#764BA2',
+                            borderWidth: 1
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        title: { display: true, text: 'Ingresos Netos, Gastos y Otros' }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            title: { display: true, text: 'Monto (COP)' }
+                        },
+                        x: { title: { display: true, text: 'Habitaciones' } }
+                    }
+                }
+            });
+
+        } catch (error) {
+            console.error('Error al cargar los reportes: ', error);
+        }
+    }
+
+    async function cargarPerdidasYGanancias() {
+        const gananciasEl = document.getElementById('gananciasTotales');
+        const perdidasEl = document.getElementById('perdidasTotales');
+
+        try {
+            const response = await fetch('http://localhost:8080/api/v1/reportes/perdidas-y-ganancias');
+            if (!response.ok) throw new Error('Error al cargar pérdidas y ganancias.');
+
+            const reporte = await response.json();
+
+            // Mostrar datos en los recuadros
+            gananciasEl.textContent = `${reporte.gananciasTotales.toLocaleString()} COP`;
+            perdidasEl.textContent = `${reporte.perdidasTotales.toLocaleString()} COP`;
+        } catch (error) {
+            console.error('Error:', error);
+            gananciasEl.textContent = 'Error al cargar datos.';
+            perdidasEl.textContent = 'Error al cargar datos.';
+        }
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+        cargarPerdidasYGanancias();
+        anioSelect.addEventListener('change', () => {
+            cargarPerdidasYGanancias();
+        });
+    });
+
+     async function cargarPagosEmpleados() {
+        const pagosTotalesEl = document.getElementById('pagosTotales');
+        const pagosEmpleadosEl = document.getElementById('pagosEmpleados');
+
+        try {
+            // Realiza una solicitud para obtener los datos
+            const response = await fetch('http://localhost:8080/api/v1/reportes/pagos-empleados');
+            if (!response.ok) throw new Error('Error al cargar pagos de empleados.');
+
+            const reportePagos = await response.json();
+
+            // Mostrar el total de pagos
+            pagosTotalesEl.textContent = `${reportePagos.pagosTotales.toLocaleString()} COP`;
+
+            // Limpiar cualquier dato previo
+            pagosEmpleadosEl.innerHTML = '';
+
+            // Iterar sobre los empleados para llenar la tabla
+            reportePagos.empleados.forEach((empleado, index) => {
+                const row = `
+                    <tr>
+                        <th scope="row">${index + 1}</th>
+                        <td>${empleado.nombre}</td>
+                        <td>${empleado.pago.toLocaleString()} COP</td>
+                    </tr>
+                `;
+                pagosEmpleadosEl.innerHTML += row;
+            });
+        } catch (error) {
+            console.error('Error:', error);
+            pagosTotalesEl.textContent = 'Error al cargar pagos.';
+            pagosEmpleadosEl.innerHTML = `
+                <tr>
+                    <td colspan="3" class="text-center text-danger">Error al cargar pagos de empleados.</td>
+                </tr>`;
+        }
+    }
+
+    // Cargar los datos cuando la página esté lista
+    document.addEventListener('DOMContentLoaded', () => {
+        cargarPagosEmpleados();
+    });
+
+    async function cargarInventarios() {
+        try {
+            const response = await fetch(`${BASE_URL}/inventarios/obtener`);
+            const inventarios = await response.json();
+            mostrarInventarios(inventarios);
+        } catch (error) {
+            console.error("Error al cargar inventarios:", error);
+            alert("No se pudieron cargar los inventarios.");
+        }
+    }
+
+    function mostrarInventarios(inventarios) {
+        const tabla = document.getElementById("tablaInventario");
+        const mensaje = document.getElementById("mensajeSinDatos");
+        tabla.innerHTML = "";
+
+        if (inventarios.length === 0) {
+            mensaje.classList.remove("d-none");
+            return;
+        }
+
+        mensaje.classList.add("d-none");
+
+        inventarios.forEach(inv => {
+            tabla.innerHTML += `
+                <tr>
+                    <td>${inv.id}</td>
+                    <td>${inv.item}</td>
+                    <td>${inv.cantidad}</td>
+                    <td>${new Intl.NumberFormat('es-CO', { style: 'currency', currency: 'COP' }).format(inv.costo)}</td>
+                    <td>${inv.habitacion.id || 'N/A'}</td>
+                    <td>
+                        <button class="btn btn-warning btn-sm" title="Editar" onclick="cargarInventario(${inv.id})">
+                            <i class="fa fa-edit"></i>
+                        </button>
+                        <button class="btn btn-danger btn-sm" title="Eliminar" onclick="eliminarInventario(${inv.id})">
+                            <i class="fa fa-trash"></i>
+                        </button>
+                    </td>
+                </tr>
+            `;
+        });
+    }
+
+    function filtrarInventarios() {
+        const filtro = document.getElementById("busquedaInventario").value.toLowerCase();
+        const filas = document.querySelectorAll("#tablaInventario tr");
+
+        filas.forEach(fila => {
+            const textoFila = fila.innerText.toLowerCase();
+            fila.style.display = textoFila.includes(filtro) ? "" : "none";
+        });
+    }
+
+    function ordenarTabla(columna) {
+        const tabla = document.getElementById("tablaInventario");
+        const filas = Array.from(tabla.rows);
+
+        const ascendente = !tabla.dataset.orden || tabla.dataset.orden !== "ascendente";
+        filas.sort((a, b) => {
+            const celdaA = a.cells[columna].innerText;
+            const celdaB = b.cells[columna].innerText;
+
+            if (!isNaN(celdaA) && !isNaN(celdaB)) {
+                return ascendente ? celdaA - celdaB : celdaB - celdaA;
+            }
+            return ascendente ? celdaA.localeCompare(celdaB) : celdaB.localeCompare(celdaA);
+        });
+
+        tabla.innerHTML = filas.map(fila => fila.outerHTML).join("");
+        tabla.dataset.orden = ascendente ? "ascendente" : "descendente";
+    }
+
+    async function guardarInventario() {
+        const id = document.getElementById("inventarioId").value;
+        const habitacionId = document.getElementById("habitacionId").value;
+        const item = document.getElementById("item").value.trim();
+        const cantidad = document.getElementById("cantidad").value;
+        const costo = document.getElementById("costo").value;
+
+        if (!habitacionId || !item || !cantidad || !costo) {
+            alert("Por favor, complete todos los campos.");
+            return;
+        }
+
+        const url = id ? `${BASE_URL}/inventarios/actualizar/${id}` : `${BASE_URL}/inventarios/agregar`;
+        const method = id ? "PUT" : "POST";
+
+        try {
+            const response = await fetch(url, {
+                method,
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ id, habitacion: { id: habitacionId }, item, cantidad, costo })
+            });
+
+            if (!response.ok) {
+                const error = await response.json();
+                throw new Error(error.message || "Error al guardar el inventario.");
+            }
+
+            alert("Inventario guardado con éxito.");
+            cargarInventarios();
+            limpiarFormulario();
+        } catch (error) {
+            console.error("Error al guardar inventario:", error);
+            alert("No se pudo guardar el inventario. " + error.message);
+        }
+    }
+
+
+    function limpiarFormulario() {
+        document.getElementById("inventarioForm").reset();
+        document.getElementById("inventarioId").value = "";
+    }
+
+    async function eliminarInventario(id) {
+        try {
+            const response = await fetch(`${BASE_URL}/inventarios/eliminar/${id}`, { method: "DELETE" });
+            if (!response.ok) throw new Error("Error al eliminar inventario.");
+            cargarInventarios();
+        } catch (error) {
+            console.error("Error:", error);
+            alert("No se pudo eliminar el inventario.");
+        }
+    }
+
+    async function cargarInventario(id) {
+        try {
+            const response = await fetch(`${BASE_URL}/inventarios/${id}`);
+            if (!response.ok) throw new Error("Inventario no encontrado");
+            const inventario = await response.json();
+
+            document.getElementById("inventarioId").value = inventario.id;
+            document.getElementById("habitacionId").value = inventario.habitacion.id;
+            document.getElementById("item").value = inventario.item;
+            document.getElementById("cantidad").value = inventario.cantidad;
+            document.getElementById("costo").value = inventario.costo;
+        } catch (error) {
+            console.error("Error al cargar inventario:", error);
+            alert("No se pudo cargar el inventario.");
+        }
+    }
+
+    window.onload = function() {
+       cargarInventarios();
+       obtenerHabitaciones();
+    };
+</script>
+</body>
+</html>
+
