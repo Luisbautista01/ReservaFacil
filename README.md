@@ -47,28 +47,14 @@ Este problema se traduce en una menor capacidad para atraer visitantes y en un s
 
 ## 🌟 **Funcionalidades Claves De La Aplicación “ReservaFácil”**
 
-ReservaFácil está diseñada para optimizar y facilitar la gestión hotelera mediante las siguientes funcionalidades clave:
+📌 ReservaFácil está diseñada para optimizar y facilitar la gestión hotelera mediante las siguientes funcionalidades clave:
 
 ---
 
 ### 📋 **Administración de Clientes**
 - Permite agregar y administrar información de clientes mediante un formulario intuitivo.
-
-<p align="center">
-  <img src="./hotel/src/main/resources/static/img/registroClientes.png" alt="Registro de Clientes" width="300">
-</p>
-
 - Los datos personales de los huéspedes se almacenan de manera organizada.
-
-<p align="center">
-  <img src="./hotel/src/main/resources/static/img/tarjetaCliente.png" alt="Tarjeta  de Cliente." width="300">
-</p>
-
 - Facilita el acceso rápido al historial y registro de clientes.
-
-<p align="center">
-  <img src="./hotel/src/main/resources/static/img/listadoClientes.png" alt="Listado de Clientes" width="300">
-</p>
 
 ---
 
@@ -104,10 +90,5 @@ Estas funcionalidades hacen de **ReservaFácil** una herramienta integral y efic
 
 ---
 
-### 📌 **Instrucciones para incluir el logo:**
-1. Asegúrate de colocar la imagen del logo en el mismo directorio del archivo `README.md`.
-2. Actualiza la ruta en la línea del logo:
-   ```markdown
-   <img src="./ruta/a/la/imagen.png" alt="Logo de ReservaFácil" width="300">
 
 
