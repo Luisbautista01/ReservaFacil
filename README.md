@@ -51,6 +51,16 @@ Este problema se traduce en una menor capacidad para atraer visitantes y en un s
 
 ---
 
+### 📋 **Encabezado y Bienvenida**
+
+<p align="center">
+  <img src="./hotel/src/main/resources/static/img/bienvenida.png" alt="Bienvenida" width="300">
+</p>
+
+- El encabezado presenta un mensaje de bienvenida con una imagen y texto, que representa el branding(marca) del sitio y un lema.
+
+---
+
 ### 📋 **Administración de Clientes**
 - Permite agregar y administrar información de clientes mediante un formulario intuitivo.
 - Los datos personales de los huéspedes se almacenan de manera organizada.
