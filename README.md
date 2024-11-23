@@ -47,11 +47,11 @@ Este problema se traduce en una menor capacidad para atraer visitantes y en un s
 
 ## 🌟 **Funcionalidades Claves De La Aplicación “ReservaFácil”**
 
-📌 ReservaFácil está diseñada para optimizar y facilitar la gestión hotelera mediante las siguientes funcionalidades clave:
+ReservaFácil está diseñada para optimizar y facilitar la gestión hotelera mediante las siguientes funcionalidades clave:
 
 ---
 
-### 📋 **Encabezado y Bienvenida**
+### 📌 **Encabezado y Bienvenida**
 
 <p align="center">
   <img src="./hotel/src/main/resources/static/img/bienvenida.png" alt="Bienvenida" width="300">
