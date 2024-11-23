@@ -29,10 +29,40 @@ Además, al integrar funcionalidades de notificación y seguimiento de disponibi
 
 ---
 
+
+---
+
+## 🎯 **Objetivo Provisional**
+
+### 📌 **Objetivo General**
+Diseñar una aplicación para la gestión de reservas en los hoteles de **San Bernardo del Viento, Córdoba**.
+
+---
+
+### 📌 **Objetivos Específicos**
+- **📋 Implementar CRUD completo:**  
+  Desarrollar un sistema que permita la gestión de clientes, empleados, habitaciones y reservas, ofreciendo funcionalidades para crear, actualizar, visualizar y eliminar registros de manera ágil y eficiente.
+
+- **💻 Diseñar una interfaz intuitiva:**  
+  Crear una interfaz de usuario que facilite la navegación y mejore la experiencia del usuario durante la gestión de reservas.
+
+- **⚡ Incorporar botones de acción directa:**  
+  Incluir botones en las vistas generales de clientes, empleados, habitaciones y reservas, para actualizar o eliminar registros fácilmente, promoviendo una administración rápida y eficaz de la información.
+
+- **✅ Asegurar la validación e integridad de datos:**  
+  Implementar mecanismos que garanticen la calidad de la información ingresada, reduciendo errores comunes en los formularios de entrada.
+
+- **🔒 Validar campos requeridos en formularios:**  
+  Incorporar validaciones en los formularios de creación y actualización para evitar envíos incompletos o erróneos, asegurando que los registros sean consistentes y completos.
+
+---
+
+
 ### ❗ **Breve Descripción General Del Problema**  
 La falta de un sistema eficiente de gestión de reservas es un problema común en los hoteles de **San Bernardo del Viento, Córdoba**, donde muchos hoteles aún dependen de métodos manuales para administrar las reservas.  
 
 Esta situación incrementa el riesgo de errores, como sobreventas y conflictos de disponibilidad, y además dificulta la organización interna de los hoteles. La ausencia de un sistema centralizado y automatizado limita la eficiencia operativa y afecta negativamente la experiencia de los huéspedes, reduciendo la competitividad de los hoteles en un mercado turístico que demanda rapidez y accesibilidad.  
 
 Este problema se traduce en una menor capacidad para atraer visitantes y en un servicio menos eficiente para los turistas que eligen la región como destino.
+
 
