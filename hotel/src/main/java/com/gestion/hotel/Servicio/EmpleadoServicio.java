@@ -27,15 +27,12 @@ public class EmpleadoServicio {
     }
 
     public void crearEmpleado(Empleado empleado) {
+        validarInformacionEmpleado(empleado);
+
         if (empleadoRepositorio.findByCorreoElectronico(empleado.getCorreoElectronico()).isPresent()) {
             throw new EmpleadoExistenteExcepcion(empleado.getCorreoElectronico());
         }
-        if ((empleado.getNombre() == null) ||
-                (empleado.getApellido() == null) ||
-                (empleado.getRol() == null) ||
-                (empleado.getCorreoElectronico() == null)) {
-            throw new InformacionIncompletaExcepcion();
-        }
+
         empleadoRepositorio.save(empleado);
     }
 
@@ -43,18 +40,22 @@ public class EmpleadoServicio {
         Empleado empleadoActualizar = empleadoRepositorio.findById(empleadoId)
                 .orElseThrow(() -> new EmpleadoNoEncontradoExcepcion(empleadoId));
 
+        validarInformacionEmpleado(empleado);
+
         empleadoActualizar.setNombre(empleado.getNombre());
         empleadoActualizar.setApellido(empleado.getApellido());
         empleadoActualizar.setRol(empleado.getRol());
         empleadoActualizar.setCorreoElectronico(empleado.getCorreoElectronico());
 
+        empleadoRepositorio.save(empleadoActualizar);
+    }
+
+    private void validarInformacionEmpleado(Empleado empleado) {
         if ((empleado.getNombre() == null) ||
                 (empleado.getApellido() == null) ||
                 (empleado.getCorreoElectronico() == null)) {
             throw new InformacionIncompletaExcepcion();
         }
-
-        empleadoRepositorio.save(empleadoActualizar);
     }
 
     public List<Empleado> obtenerEmpleados() {
@@ -62,7 +63,7 @@ public class EmpleadoServicio {
     }
 
     public List<Empleado> obtenerEmpleadosDisponibles() {
-        return empleadoRepositorio.findByDisponibleTrue(); // Asumiendo que tienes este método en tu repositorio
+        return empleadoRepositorio.findByDisponibleTrue();
     }
 
     public List<Empleado> obtenerEmpleadosPorRol(String rol) {
@@ -100,6 +101,4 @@ public class EmpleadoServicio {
 
         return pagos;
     }
-
-
 }

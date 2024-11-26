@@ -16,6 +16,7 @@ public class Cliente {
     private String apellido;
     private String correoElectronico;
     private String telefono;
+    private boolean consentimiento;
 
     @OneToMany(mappedBy = "cliente")
     @JsonIgnore
@@ -31,6 +32,14 @@ public class Cliente {
         this.correoElectronico = correoElectronico;
         this.telefono = telefono;
         this.reservas = reservas;
+    }
+
+    public boolean isConsentimiento() {
+        return consentimiento;
+    }
+
+    public void setConsentimiento(boolean consentimiento) {
+        this.consentimiento = consentimiento;
     }
 
     public Long getId() {

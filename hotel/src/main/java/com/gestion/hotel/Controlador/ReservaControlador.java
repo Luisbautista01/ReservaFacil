@@ -1,6 +1,5 @@
 package com.gestion.hotel.Controlador;
 
-import com.gestion.hotel.Excepciones.InformacionIncompletaExcepcion;
 import com.gestion.hotel.Excepciones.ReservaNoEncontradaExcepcion;
 import com.gestion.hotel.Modelo.Reserva;
 import com.gestion.hotel.Servicio.ReservaServicio;
@@ -23,14 +22,12 @@ public class ReservaControlador {
     }
 
     @PostMapping("/crear")
-    public ResponseEntity<String> crearReserva(@RequestBody Reserva reserva) {
+    public ResponseEntity<Reserva> crearReserva(@RequestBody Reserva reserva) {
         try {
             Reserva nuevaReserva = reservaServicio.crearReserva(reserva);
-            return ResponseEntity.ok("Reserva creada correctamente con ID: " + nuevaReserva.getId());
-        } catch (IllegalStateException e) {
-            return ResponseEntity.status(HttpStatus.CONFLICT).body("La habitación ya está ocupada.");
-        } catch (InformacionIncompletaExcepcion e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+            return ResponseEntity.status(HttpStatus.CREATED).body(nuevaReserva);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
         }
     }
 

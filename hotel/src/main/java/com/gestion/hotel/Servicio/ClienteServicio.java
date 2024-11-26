@@ -9,7 +9,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-
 @Service
 public class ClienteServicio {
 
@@ -21,38 +20,36 @@ public class ClienteServicio {
     }
 
     public void crearCliente(Cliente cliente) {
-        // Verificar que toda la información requerida esté presente
-        if (cliente.getNombre() == null || cliente.getApellido() == null ||
-                cliente.getCorreoElectronico() == null || cliente.getTelefono() == null) {
-            throw new InformacionIncompletaExcepcion();
-        }
+        validarInformacionCliente(cliente);
 
-        // Verificar que el correo electrónico no esté registrado
         if (clienteRepositorio.existsByCorreoElectronico(cliente.getCorreoElectronico())) {
             throw new ClienteExistenteExcepcion(cliente.getCorreoElectronico());
         }
 
-        // Guardar el cliente si todas las verificaciones han pasado
         clienteRepositorio.save(cliente);
     }
+
 
     public void actualizarCliente(Long clienteId, Cliente cliente) {
         Cliente clienteActualizar = clienteRepositorio.findById(clienteId)
                 .orElseThrow(() -> new ClienteNoEncontradoExcepcion(clienteId));
 
+        validarInformacionCliente(cliente);
+
         clienteActualizar.setNombre(cliente.getNombre());
         clienteActualizar.setApellido(cliente.getApellido());
         clienteActualizar.setCorreoElectronico(cliente.getCorreoElectronico());
-        clienteActualizar.setTelefono(clienteActualizar.getTelefono());
-
-        if ((cliente.getNombre() == null) ||
-                (cliente.getApellido() == null) ||
-                (cliente.getCorreoElectronico() == null) ||
-                (cliente.getTelefono() == null)) {
-            throw new InformacionIncompletaExcepcion();
-        }
+        clienteActualizar.setTelefono(cliente.getTelefono());
+        clienteActualizar.setConsentimiento(cliente.isConsentimiento());
 
         clienteRepositorio.save(clienteActualizar);
+    }
+
+    private void validarInformacionCliente(Cliente cliente) {
+        if (cliente.getNombre() == null || cliente.getApellido() == null ||
+                cliente.getCorreoElectronico() == null || cliente.getTelefono() == null) {
+            throw new InformacionIncompletaExcepcion();
+        }
     }
 
     public List<Cliente> obtenerClientes() {
@@ -62,6 +59,12 @@ public class ClienteServicio {
     public Cliente obtenerClientesPorId(Long clienteId) {
         return clienteRepositorio.findById(clienteId)
                 .orElseThrow(() -> new ClienteNoEncontradoExcepcion(clienteId));
+    }
+
+    public Cliente obtenerPorCorreoElectronico(String correoElectronico) {
+        return clienteRepositorio.findByCorreoElectronico(correoElectronico)
+                .orElseThrow(() -> new RuntimeException(
+                        "No se encontró un cliente con el correo electrónico: " + correoElectronico));
     }
 
     public void eliminarCliente(Long clienteId) {

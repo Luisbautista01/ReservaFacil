@@ -351,7 +351,7 @@
                 </div>
                 <div class="col-md-4 mb-4">
                     <div class="card shadow-sm">
-                        <img src="img/comodidad1.webp" class="card-img-top" alt="Instalaciones Modernas">
+                        <img src="img/comodidad.jpg" class="card-img-top" alt="Instalaciones Modernas">
                         <div class="card-body text-center">
                             <h5 class="card-title">Instalaciones Modernas</h5>
                             <p class="card-text">Disfruta de áreas modernas y bien equipadas para tu confort.</p>
@@ -907,7 +907,7 @@
         }
     }
 
-   // URL de la aplicación Web
+    // URL de la aplicación Web
     const BASE_URL = 'http://localhost:8080/api/v1';
 
     function mostrarSeccionClientes() {
@@ -1057,7 +1057,7 @@
               });
     }
 
-   function buscarClientePorId() {
+    function buscarClientePorId() {
       const clienteId = document.getElementById('clienteId').value;
 
       axios.get(`${BASE_URL}/clientes/obtener/${clienteId}`)
@@ -1084,19 +1084,19 @@
               const clienteDetalle = document.getElementById('clienteDetalle');
               clienteDetalle.innerHTML = `<p class="text-danger">Cliente no encontrado.</p>`;
           });
-  }
+    }
 
-  // Cargar todos los clientes al iniciar
-  document.addEventListener('DOMContentLoaded', obtenerClientes);
+    // Cargar todos los clientes al iniciar
+    document.addEventListener('DOMContentLoaded', obtenerClientes);
 
 
-  // Mostrar empleados
-   function mostrarEmpleados() {
+    // Mostrar empleados
+    function mostrarEmpleados() {
         toggleSection('empleados-section');
-   }
+    }
 
-  // Obtener todos los empleados
-   function obtenerEmpleados() {
+    // Obtener todos los empleados
+    function obtenerEmpleados() {
         axios.get(`${BASE_URL}/empleados/obtener`)
             .then(response => {
                 const empleadosList = document.getElementById('empleados-list');
@@ -1123,8 +1123,8 @@
             });
     }
 
-  // Crear un nuevo empleado
-  function crearEmpleado() {
+    // Crear un nuevo empleado
+    function crearEmpleado() {
         const empleado = {
             nombre: document.getElementById('empleadoNombre').value,
             apellido: document.getElementById('empleadoApellido').value,
@@ -1142,10 +1142,10 @@
                 console.error('Error al crear el empleado:', error);
                 alert('Error al crear el empleado');
             });
-  }
+    }
 
-   // Eliminar un empleado
-  function eliminarEmpleado(empleadoId) {
+    // Eliminar un empleado
+    function eliminarEmpleado(empleadoId) {
         axios.delete(`${BASE_URL}/empleados/eliminar/${empleadoId}`)
             .then(response => {
                 alert(response.data);
@@ -1155,10 +1155,10 @@
                 console.error('Error al eliminar el empleado:', error);
                 alert('Error al eliminar el empleado');
             });
-  }
+    }
 
-  //Editar un empleado
-   function editarEmpleado(id, nombre, apellido, correo, rol) {
+    //Editar un empleado
+    function editarEmpleado(id, nombre, apellido, correo, rol) {
         // Completar los campos del formulario con la información del empleado
         document.getElementById('empleadoNombre').value = nombre;
         document.getElementById('empleadoApellido').value = apellido;
@@ -1171,10 +1171,10 @@
             actualizarEmpleado(id);
             return false;
         };
-   }
+    }
 
-  // Actualizar un empleado
-  function actualizarEmpleado(id) {
+    // Actualizar un empleado
+    function actualizarEmpleado(id) {
         const empleado = {
             nombre: document.getElementById('empleadoNombre').value,
             apellido: document.getElementById('empleadoApellido').value,
@@ -1197,10 +1197,10 @@
                 console.error('Error al actualizar el empleado:', error);
                 alert('Error al actualizar el empleado');
             });
-  }
+    }
 
-  //Buscar empleados por rol
-  function buscarEmpleadosPorRol() {
+    //Buscar empleados por rol
+    function buscarEmpleadosPorRol() {
       const rol = document.getElementById('rolBusquedaInput').value;
 
       // Solicita a la API los empleados con el rol ingresado
@@ -1235,20 +1235,20 @@
               console.error('Error al buscar empleados:', error);
               alert('Error al buscar empleados');
           });
-  }
+    }
 
 
-   // Inicializar y cargar los empleados al cargar la página
+    // Inicializar y cargar los empleados al cargar la página
     document.addEventListener('DOMContentLoaded', function() {
         obtenerEmpleados();
     });
 
-  function mostrarHabitaciones() {
+    function mostrarHabitaciones() {
         obtenerHabitaciones();
-  }
+    }
 
-  // Obtener todas las habitaciones
-   function obtenerHabitaciones() {
+    // Obtener todas las habitaciones
+    function obtenerHabitaciones() {
         axios.get(`${BASE_URL}/habitaciones/obtener`)
             .then(response => {
                 const habitacionesList = document.getElementById('habitaciones-list');
@@ -1275,10 +1275,10 @@
             .catch(error => {
                 console.error('Error al obtener habitaciones:', error);
             });
-  }
+    }
 
-  // Crear una nueva habitación
-   function crearHabitacion() {
+    // Crear una nueva habitación
+    function crearHabitacion() {
         const habitacion = {
             tipo: document.getElementById('habitacionTipo').value,
             capacidad: document.getElementById('habitacionCapacidad').value,
@@ -1297,10 +1297,10 @@
                 console.error('Error al crear la habitación:', error);
                 alert('Error al crear la habitación');
             });
-   }
+    }
 
-   // Eliminar una habitación
-   function eliminarHabitacion(habitacionId) {
+    // Eliminar una habitación
+    function eliminarHabitacion(habitacionId) {
         axios.delete(`${BASE_URL}/habitaciones/eliminar/${habitacionId}`)
             .then(response => {
                 alert(response.data);
@@ -1310,10 +1310,10 @@
                 console.error('Error al eliminar la habitación:', error);
                 alert('Error al eliminar la habitación');
             });
-   }
+    }
 
-   // Cargar los datos de una habitación para actualizarla
-   function cargarHabitacion(habitacionId) {
+    // Cargar los datos de una habitación para actualizarla
+    function cargarHabitacion(habitacionId) {
         axios.get(`${BASE_URL}/habitaciones/obtener/${habitacionId}`)
             .then(response => {
                 const habitacion = response.data;
@@ -1332,10 +1332,10 @@
                 console.error('Error al cargar la habitación:', error);
                 alert('Error al cargar la habitación');
             });
-   }
+    }
 
-   // Actualizar los datos de una habitación
-   function actualizarHabitacion(habitacionId) {
+    // Actualizar los datos de una habitación
+    function actualizarHabitacion(habitacionId) {
         const habitacion = {
             tipo: document.getElementById('habitacionTipo').value,
             capacidad: document.getElementById('habitacionCapacidad').value,
@@ -1358,9 +1358,9 @@
                 console.error('Error al actualizar la habitación:', error);
                 alert('Error al actualizar la habitación');
             });
-   }
+    }
 
-   // Buscar habitación por ID
+    // Buscar habitación por ID
     function buscarHabitacion() {
           const habitacionId = document.getElementById('habitacionId').value;
           const resultadoBusqueda = document.getElementById('resultado-busqueda-habitacion');
@@ -1407,7 +1407,7 @@
     }
 
 
-   // Buscar habitaciones por tipo
+    // Buscar habitaciones por tipo
     function buscarHabitacionesPorTipo() {
          const habitacionTipo = document.getElementById('habitacionTipoBusqueda').value;
 
@@ -1450,16 +1450,16 @@
              });
     }
 
-  // Inicializar y cargar las habitaciones al cargar la página
-  document.addEventListener('DOMContentLoaded', mostrarHabitaciones);
+    // Inicializar y cargar las habitaciones al cargar la página
+    document.addEventListener('DOMContentLoaded', mostrarHabitaciones);
 
 
-  // Mostrar reservas y cargar la lista
-   function mostrarReservas() {
+    // Mostrar reservas y cargar la lista
+    function mostrarReservas() {
        ocultarSecciones();  // Oculta otras secciones si tienes otras además de la de reservas
        document.getElementById('reservas-section').style.display = 'block';
        obtenerReservas();
-   }
+    }
 
     // Obtener las reservas
      function obtenerReservas() {

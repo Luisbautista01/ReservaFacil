@@ -25,6 +25,9 @@ public class ClienteControlador {
 
     @PostMapping("/crear")
     public ResponseEntity<String> crearCliente(@RequestBody Cliente cliente) {
+        if (!cliente.isConsentimiento()) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Debe aceptar el consentimiento de datos.");
+        }
         try {
             clienteServicio.crearCliente(cliente);
             return ResponseEntity.status(HttpStatus.CREATED).body("Cliente creado correctamente.");
@@ -55,6 +58,16 @@ public class ClienteControlador {
             Cliente cliente = clienteServicio.obtenerClientesPorId(clienteId);
             return ResponseEntity.ok(cliente);
         } catch (ClienteNoEncontradoExcepcion e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        }
+    }
+
+    @GetMapping("/obtener-por-correo")
+    public ResponseEntity<?> obtenerClientePorCorreo(@RequestParam("correo") String correoElectronico) {
+        try {
+            Cliente cliente = clienteServicio.obtenerPorCorreoElectronico(correoElectronico);
+            return ResponseEntity.ok(cliente);
+        } catch (RuntimeException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
         }
     }

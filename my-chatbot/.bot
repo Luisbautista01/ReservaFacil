@@ -1,0 +1,8 @@
+//.bot
+{
+  "name": "My Chatbot",
+  "description": "Bot for reservations",
+  "services": [],
+  "padlock": "",
+  "secretKey": ""
+}

@@ -16,6 +16,7 @@ public class Empleado {
     private String apellido;
     private String rol;
     private String correoElectronico;
+    @Column(nullable = false)
     private boolean disponible;
 
     // Un empleado puede gestionar múltiples reservas, pero cada reserva está a cargo de un solo empleado (aunque esta relación puede ser opcional).

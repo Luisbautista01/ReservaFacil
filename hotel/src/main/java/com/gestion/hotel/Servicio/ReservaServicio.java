@@ -2,8 +2,10 @@ package com.gestion.hotel.Servicio;
 
 import com.gestion.hotel.Excepciones.InformacionIncompletaExcepcion;
 import com.gestion.hotel.Excepciones.ReservaNoEncontradaExcepcion;
+import com.gestion.hotel.Modelo.Empleado;
 import com.gestion.hotel.Modelo.Habitacion;
 import com.gestion.hotel.Modelo.Reserva;
+import com.gestion.hotel.Repositorio.EmpleadoRepositorio;
 import com.gestion.hotel.Repositorio.HabitacionRepositorio;
 import com.gestion.hotel.Repositorio.ReservaRepositorio;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,34 +17,40 @@ import java.util.List;
 public class ReservaServicio {
     private final ReservaRepositorio reservaRepositorio;
     private final HabitacionRepositorio habitacionRepositorio;
+    private final EmpleadoRepositorio empleadoRepositorio;
 
     @Autowired
-    public ReservaServicio(ReservaRepositorio reservaRepositorio, HabitacionRepositorio habitacionRepositorio) {
+    public ReservaServicio(ReservaRepositorio reservaRepositorio, HabitacionRepositorio habitacionRepositorio, EmpleadoRepositorio empleadoRepositorio) {
         this.reservaRepositorio = reservaRepositorio;
         this.habitacionRepositorio = habitacionRepositorio;
+        this.empleadoRepositorio = empleadoRepositorio;
     }
 
     public Reserva crearReserva(Reserva reserva) {
-        verificarInformacion(reserva);
-
-        // Marcar la habitación como ocupada
         Habitacion habitacion = habitacionRepositorio.findById(reserva.getHabitacion().getId())
-                .orElseThrow(() -> new IllegalArgumentException("Habitación no encontrada"));
-
+                .orElseThrow(() -> new IllegalStateException("La habitación no existe."));
         if (!habitacion.isDisponible()) {
             throw new IllegalStateException("La habitación ya está ocupada.");
         }
 
+        Empleado empleado = asignarEmpleadoDisponible();
         habitacion.setDisponible(false);
-        habitacionRepositorio.save(habitacion);
+        empleado.setDisponible(false);
+        reserva.setEmpleado(empleado);
 
+        habitacionRepositorio.save(habitacion);
+        empleadoRepositorio.save(empleado);
         return reservaRepositorio.save(reserva);
+    }
+
+    public Empleado asignarEmpleadoDisponible() {
+        return empleadoRepositorio.findFirstByDisponibleTrue()
+                .orElseThrow(() -> new IllegalStateException("No hay empleados disponibles."));
     }
 
     public List<Reserva> obtenerReservas() {
         return reservaRepositorio.findAll();
     }
-
 
     public Reserva actualizarReserva(Long reservaId, Reserva reserva) {
         Reserva reservaActualizar = reservaRepositorio.findById(reservaId)
@@ -61,8 +69,6 @@ public class ReservaServicio {
         }
 
         verificarInformacion(reservaActualizar);
-        System.out.println("Reserva ID: " + reservaId);
-        System.out.println("Datos de la reserva recibida: " + reserva);
 
         reservaRepositorio.save(reservaActualizar);
         return reservaActualizar;
