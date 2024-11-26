@@ -67,8 +67,8 @@ public class ClienteControlador {
         try {
             Cliente cliente = clienteServicio.obtenerPorCorreoElectronico(correoElectronico);
             return ResponseEntity.ok(cliente);
-        } catch (RuntimeException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        } catch (ClienteNoEncontradoExcepcion e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No se encontró un cliente con el correo proporcionado.");
         }
     }
 
