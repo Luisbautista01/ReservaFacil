@@ -33,7 +33,9 @@ public class ReservaServicio {
             throw new IllegalStateException("La habitación ya está ocupada.");
         }
 
-        Empleado empleado = asignarEmpleadoDisponible();
+        Empleado empleado = empleadoRepositorio.findFirstByDisponibleTrue()
+                .orElseThrow(() -> new IllegalStateException("No hay empleados disponibles."));
+
         habitacion.setDisponible(false);
         empleado.setDisponible(false);
         reserva.setEmpleado(empleado);
@@ -42,6 +44,7 @@ public class ReservaServicio {
         empleadoRepositorio.save(empleado);
         return reservaRepositorio.save(reserva);
     }
+
 
     public Empleado asignarEmpleadoDisponible() {
         return empleadoRepositorio.findFirstByDisponibleTrue()

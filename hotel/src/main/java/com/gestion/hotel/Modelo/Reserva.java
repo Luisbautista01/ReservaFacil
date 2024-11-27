@@ -2,6 +2,7 @@ package com.gestion.hotel.Modelo;
 
 import jakarta.persistence.*;
 import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
 
 @Entity
 @Table(name = "reserva")
@@ -29,6 +30,12 @@ public class Reserva {
 
     public Reserva() {
     }
+
+    public double calcularTotal(Reserva reserva) {
+        long dias = ChronoUnit.DAYS.between(reserva.getFechaIngreso(), reserva.getFechaSalida());
+        return dias * reserva.getHabitacion().getPrecioPorNoche();
+    }
+
 
     public Reserva(Long id, LocalDate fechaIngreso, LocalDate fechaSalida, double total, Cliente cliente, Habitacion habitacion, Empleado empleado) {
         this.id = id;
