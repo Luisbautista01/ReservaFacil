@@ -31,8 +31,8 @@ public class ClienteControlador {
         try {
             clienteServicio.crearCliente(cliente);
             return ResponseEntity.status(HttpStatus.CREATED).body("Cliente creado correctamente.");
-        } catch (ClienteExistenteExcepcion | InformacionIncompletaExcepcion e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        } catch (ClienteExistenteExcepcion e) {
+            return ResponseEntity.status(HttpStatus.CONFLICT).body("El cliente ya está registrado.");
         }
     }
 

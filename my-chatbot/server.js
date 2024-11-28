@@ -1,4 +1,5 @@
 const restify = require('restify');
+const path = require('path');
 
 /**
  * Configura y devuelve el servidor Restify.
@@ -11,6 +12,12 @@ module.exports = function configureServer(adapter, bot) {
 
     // Middleware para analizar el cuerpo de las solicitudes
     server.use(restify.plugins.bodyParser());
+
+    // Servir imágenes desde la carpeta 'img'
+    server.get('/img/*', restify.plugins.serveStatic({
+        directory: path.join(__dirname, 'img'), // Asegúrate de que 'img' esté en el mismo nivel que tu archivo server.js
+        appendRequestPath: false
+    }));
 
     // Endpoint para procesar mensajes
     server.post('/api/messages', async (req, res) => {

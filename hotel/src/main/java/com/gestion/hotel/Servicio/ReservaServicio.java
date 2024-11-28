@@ -40,11 +40,16 @@ public class ReservaServicio {
         empleado.setDisponible(false);
         reserva.setEmpleado(empleado);
 
+        // Asignar el total basado en el precio de la habitación y el número de noches
+        long diasEstadia = java.time.temporal.ChronoUnit.DAYS.between(reserva.getFechaIngreso(), reserva.getFechaSalida());
+        double total = habitacion.getPrecioPorNoche() * diasEstadia;
+        reserva.setTotal(total);
+
         habitacionRepositorio.save(habitacion);
         empleadoRepositorio.save(empleado);
+
         return reservaRepositorio.save(reserva);
     }
-
 
     public Empleado asignarEmpleadoDisponible() {
         return empleadoRepositorio.findFirstByDisponibleTrue()

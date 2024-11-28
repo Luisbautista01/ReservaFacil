@@ -15,6 +15,8 @@ public class Reserva {
     private LocalDate fechaSalida;
     @Column(nullable = false)
     private double total;
+    @Column(nullable = false)
+    private String metodoPago;
 
     @ManyToOne
     @JoinColumn(name = "cliente_id", nullable = false)
@@ -31,12 +33,6 @@ public class Reserva {
     public Reserva() {
     }
 
-    public double calcularTotal(Reserva reserva) {
-        long dias = ChronoUnit.DAYS.between(reserva.getFechaIngreso(), reserva.getFechaSalida());
-        return dias * reserva.getHabitacion().getPrecioPorNoche();
-    }
-
-
     public Reserva(Long id, LocalDate fechaIngreso, LocalDate fechaSalida, double total, Cliente cliente, Habitacion habitacion, Empleado empleado) {
         this.id = id;
         this.fechaIngreso = fechaIngreso;
@@ -45,6 +41,14 @@ public class Reserva {
         this.cliente = cliente;
         this.habitacion = habitacion;
         this.empleado = empleado;
+    }
+
+    public String getMetodoPago() {
+        return metodoPago;
+    }
+
+    public void setMetodoPago(String metodoPago) {
+        this.metodoPago = metodoPago;
     }
 
     public Long getId() {
