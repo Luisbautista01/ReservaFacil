@@ -15,8 +15,16 @@ public class Reserva {
     private LocalDate fechaSalida;
     @Column(nullable = false)
     private double total;
+    @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private String metodoPago;
+    private MetodoPago metodoPago;
+
+    public enum MetodoPago {
+        TARJETA_CREDITO,
+        TARJETA_DEBITO,
+        EFECTIVO,
+        TRANSFERENCIA_BANCARIA
+    }
 
     @ManyToOne
     @JoinColumn(name = "cliente_id", nullable = false)
@@ -43,11 +51,11 @@ public class Reserva {
         this.empleado = empleado;
     }
 
-    public String getMetodoPago() {
+    public MetodoPago getMetodoPago() {
         return metodoPago;
     }
 
-    public void setMetodoPago(String metodoPago) {
+    public void setMetodoPago(MetodoPago metodoPago) {
         this.metodoPago = metodoPago;
     }
 

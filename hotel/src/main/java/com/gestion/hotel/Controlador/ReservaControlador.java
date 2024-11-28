@@ -26,8 +26,10 @@ public class ReservaControlador {
         try {
             Reserva nuevaReserva = reservaServicio.crearReserva(reserva);
             return ResponseEntity.status(HttpStatus.CREATED).body(nuevaReserva);
-        } catch (Exception e) {
+        } catch (IllegalArgumentException e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
         }
     }
 

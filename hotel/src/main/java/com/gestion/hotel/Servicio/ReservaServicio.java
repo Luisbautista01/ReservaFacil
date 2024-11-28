@@ -11,6 +11,7 @@ import com.gestion.hotel.Repositorio.ReservaRepositorio;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @Service
@@ -29,6 +30,7 @@ public class ReservaServicio {
     public Reserva crearReserva(Reserva reserva) {
         Habitacion habitacion = habitacionRepositorio.findById(reserva.getHabitacion().getId())
                 .orElseThrow(() -> new IllegalStateException("La habitación no existe."));
+
         if (!habitacion.isDisponible()) {
             throw new IllegalStateException("La habitación ya está ocupada.");
         }
@@ -36,24 +38,30 @@ public class ReservaServicio {
         Empleado empleado = empleadoRepositorio.findFirstByDisponibleTrue()
                 .orElseThrow(() -> new IllegalStateException("No hay empleados disponibles."));
 
-        habitacion.setDisponible(false);
-        empleado.setDisponible(false);
-        reserva.setEmpleado(empleado);
+        // Validar fechas
+        if (reserva.getFechaIngreso().isBefore(LocalDate.now())) {
+            throw new IllegalArgumentException("La fecha de ingreso no puede ser anterior a la fecha actual.");
+        }
 
-        // Asignar el total basado en el precio de la habitación y el número de noches
+        if (reserva.getFechaIngreso().isAfter(reserva.getFechaSalida())) {
+            throw new IllegalArgumentException("La fecha de ingreso debe ser antes de la fecha de salida.");
+        }
+
+        // Calcular total
         long diasEstadia = java.time.temporal.ChronoUnit.DAYS.between(reserva.getFechaIngreso(), reserva.getFechaSalida());
         double total = habitacion.getPrecioPorNoche() * diasEstadia;
         reserva.setTotal(total);
+
+        // Marcar empleado y habitación como no disponibles
+        habitacion.setDisponible(false);
+        empleado.setDisponible(false);
+
+        reserva.setEmpleado(empleado);
 
         habitacionRepositorio.save(habitacion);
         empleadoRepositorio.save(empleado);
 
         return reservaRepositorio.save(reserva);
-    }
-
-    public Empleado asignarEmpleadoDisponible() {
-        return empleadoRepositorio.findFirstByDisponibleTrue()
-                .orElseThrow(() -> new IllegalStateException("No hay empleados disponibles."));
     }
 
     public List<Reserva> obtenerReservas() {

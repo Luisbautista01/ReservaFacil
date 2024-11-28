@@ -18,6 +18,7 @@ public class HabitacionServicio {
     }
 
     public void crearHabitacion(Habitacion habitacion) {
+        habitacion.setImagenUrl("http://localhost:3978/" + habitacion.getImagenUrl());
         habitacionRepositorio.save(habitacion);
     }
 
@@ -35,7 +36,11 @@ public class HabitacionServicio {
     }
 
     public List<Habitacion> obtenerHabitaciones() {
-        return habitacionRepositorio.findAll();
+        List<Habitacion> habitaciones = habitacionRepositorio.findAll();
+        // Asegúrate de que cada habitación tenga la URL completa de la imagen
+        habitaciones.forEach(h -> h.setImagenUrl("http://localhost:3978/img/" + h.getImagenUrl()));
+
+        return habitaciones;
     }
 
     public List<Habitacion> obtenerHabitacionesDisponibles() {
