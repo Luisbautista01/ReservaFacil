@@ -9,32 +9,17 @@ class MyBot extends ActivityHandler {
             const userMessage = context.activity.text?.toLowerCase();
 
             if (context.activity.value) {
-                // Manejar la respuesta de consentimiento
+                // Manejo de respuestas de formulario
                 if (context.activity.value.consent) {
                     const consentResponse = context.activity.value.consent;
                     if (consentResponse === "yes") {
-                        await context.sendActivity('¡Gracias por aceptar el tratamiento de datos! Ahora puedes completar tu registro.');
+                        await context.sendActivity('¡Gracias por aceptar el tratamiento de datos! Ahora puedes completar tu registro 😊.');
                         const registrationCard = this.createRegistrationForm();
                         await context.sendActivity({ attachments: [registrationCard] });
                     } else {
-                        await context.sendActivity('Entendido. No podremos proceder sin tu consentimiento. ¡Gracias por tu tiempo!');
+                        await context.sendActivity('Entendido. No podremos proceder sin tu consentimiento. ¡Gracias por tu tiempo! 😇');
                     }
-                }
-                // Verifica que se haya recibido un ID válido para la habitación seleccionada
-                if (!this.selectedRoomId) {
-                    await context.sendActivity('Por favor selecciona una habitación primero.');
-                    return;
-                }
-
-                // Verifica que la habitación esté disponible antes de proceder
-                const habitacionSeleccionada = await this.obtenerHabitacionPorId(this.selectedRoomId);
-                if (!habitacionSeleccionada || !habitacionSeleccionada.disponible) {
-                    await context.sendActivity('La habitación seleccionada no está disponible.');
-                    return;
-                }
-
-                // Manejar datos de registro
-                else if (
+                } else if (
                     context.activity.value.nombre &&
                     context.activity.value.apellido &&
                     context.activity.value.correoElectronico &&
@@ -43,9 +28,16 @@ class MyBot extends ActivityHandler {
                     const info = context.activity.value;
                     const response = await this.registrarCliente(info);
                     await context.sendActivity(response);
-                    await context.sendActivity('Ahora puedes hacer una reserva o ver las habitaciones disponibles: \n3. Ver habitaciones disponibles \n4. Crear una reserva.');
+                } else if (
+                    context.activity.value.fechaIngreso &&
+                    context.activity.value.fechaSalida &&
+                    context.activity.value.metodoPago
+                ) {
+                    const reservaInfo = { ...context.activity.value };
+                    const confirmacion = await this.confirmarReserva(reservaInfo);
+                    await context.sendActivity(confirmacion);
                 } else {
-                    await context.sendActivity('Por favor, completa todos los campos requeridos antes de continuar.');
+                    await context.sendActivity('Por favor, completa todos los campos requeridos antes de continuar ⚠️.');
                 }
                 return;
             }
@@ -57,35 +49,10 @@ class MyBot extends ActivityHandler {
                     break;
 
                 case '2':
-                    await context.sendActivity('Antes de registrarte, necesitamos tu consentimiento para tratar tus datos personales.');
+                    await context.sendActivity('Antes de registrarte, necesitamos tu consentimiento para tratar tus datos personales 😇.');
                     const consentCard = this.createConsentCard();
                     await context.sendActivity({ attachments: [consentCard] });
-                     break;
-
-                case '3': {
-                    const habitaciones = await this.obtenerHabitacionesDisponibles();
-                    if (habitaciones.length > 0) {
-                        await context.sendActivity('Estas son las habitaciones disponibles:');
-                        const heroCards = habitaciones.map(h =>
-                            CardFactory.heroCard(
-                                `Habitación: ${h.title}`,
-                                `Capacidad: ${h.subtitle}, Precio: $${h.precioPorNoche}/noche`,
-                                h.images,
-                                [
-                                    {
-                                        type: "imBack",
-                                        title: `Seleccionar ${h.title}`,
-                                        value: `reservar ${h.id}`
-                                    }
-                                ]
-                            )
-                        );
-                        await context.sendActivity({ attachments: heroCards });
-                    } else {
-                        await context.sendActivity('No hay habitaciones disponibles en este momento.');
-                    }
                     break;
-                }
 
                 default:
                     await this.handleUserMessage(context, userMessage);
@@ -98,10 +65,10 @@ class MyBot extends ActivityHandler {
             for (const member of context.activity.membersAdded) {
                 if (member.id !== context.activity.recipient.id) {
                     const welcomeMessage = `¡Hola! Soy tu asistente virtual para reservas 😊.
-                        ¿Qué te gustaría hacer?
-                        \n1. Iniciar sesión
-                        \n2. Registrarme
-                        \nPara empezar, elige una opción.`;
+                    ¿Qué te gustaría hacer?
+                    \n1. Iniciar sesión
+                    \n2. Registrarme
+                    \nPara empezar, elige una opción.`;
                     await context.sendActivity(welcomeMessage);
                 }
             }
@@ -110,48 +77,92 @@ class MyBot extends ActivityHandler {
     }
 
     async handleUserMessage(context, userMessage) {
-        if (userMessage?.startsWith('reservar')) {
-           const habitacionId = parseInt(userMessage.split(' ')[1]);
-           const habitacion = await this.obtenerHabitacionPorId(habitacionId);
-            if (habitacion && habitacion.disponible) {
-                const empleadoId = await this.obtenerEmpleadoAsignado();
-                const formularioReserva = this.crearFormularioReserva(habitacionId, empleadoId);
-                await context.sendActivity({ attachments: [formularioReserva] });
+        if (userMessage?.includes('@')) {
+            const cliente = await this.verificarCliente(userMessage);
+            if (cliente) {
+          await context.sendActivity(`¡Hola ${cliente.nombre} ${cliente.apellido}! ¿Qué te gustaría hacer hoy? 😊
+                             \n3. Ver habitaciones disponibles
+                             \n4. Crear una reserva`);
             } else {
-                await context.sendActivity('La habitación seleccionada no está disponible.');
+                await context.sendActivity('No encontramos una cuenta con ese correo. ¿Te gustaría registrarte? Responde con "Sí" o "No" 😊.');
             }
-        } else  {
-            await context.sendActivity('Escribe "reservar [ID]" para seleccionar una habitación.');
-        }
-
-        if (userMessage === 'sí' && this.obtenerHabitacionPorId(habitacionId)) {
-             // Verifica que selectedRoomId está disponible antes de proceder
-             if (!this.obtenerHabitacionPorId(habitacionId)) {
-                await context.sendActivity('Por favor, selecciona una habitación antes de proceder.');
-                 return;
-             }
-             const habitacionSeleccionada = await this.obtenerHabitacionPorId(habitacionId);
-             if (!habitacionSeleccionada) {
-                await context.sendActivity('No se pudo encontrar la habitación seleccionada.');
-                 return;
-             }
-        } else if (userMessage === 'no') {
-              await context.sendActivity('Reserva cancelada. ¿Hay algo más en lo que pueda ayudarte? 😊');
-
-        } else if (userMessage?.includes('@')) {
-              const cliente = await this.verificarCliente(userMessage);
-              if (cliente) {
-                  await context.sendActivity(`¡Hola ${cliente.nombre} ${cliente.apellido}! ¿Qué te gustaría hacer hoy? 😊
-                  \n3. Ver habitaciones disponibles
-                  \n4. Crear una reserva`);
-              } else {
-                  await context.sendActivity('No encontramos una cuenta con ese correo. ¿Te gustaría registrarte? Responde con "Sí" o "No" 😊.');
-              }
         } else if (userMessage === 'sí') {
             const registrationCard = this.createRegistrationForm();
             await context.sendActivity({ attachments: [registrationCard] });
-        } else {
-            await context.sendActivity('No entendí tu solicitud. Por favor selecciona una opción válida o escribe un mensaje más claro 😇.');
+        } else if (userMessage === '3') {
+            const habitaciones = await this.obtenerHabitacionesDisponibles();
+            if (habitaciones.length > 0) {
+                const cards = habitaciones.map(h => this.createRoomCard(h));
+                const attachments = cards.map(card => ({ contentType: "application/vnd.microsoft.card.adaptive", content: card }));
+                await context.sendActivity({ attachments });
+                await context.sendActivity('Por favor, selecciona el ID de la habitación que deseas reservar.');
+            } else {
+                await context.sendActivity('Lo siento, no hay habitaciones disponibles en este momento 😔.');
+            }
+        } else if (/^\d+$/.test(userMessage)) {
+            const habitacionId = parseInt(userMessage, 10);
+            const habitacion = await this.obtenerHabitacionPorId(habitacionId);
+            if (habitacion) {
+                const reservaForm = this.createReservationForm(habitacionId);
+                await context.sendActivity({ attachments: [reservaForm] });
+            } else {
+                await context.sendActivity("El ID de habitación ingresado no es válido.");
+            }
+        }
+    }
+
+    async verificarCliente(email) {
+        try {
+            const { data } = await axios.get(`http://localhost:8080/api/v1/clientes/obtener-por-correo?correo=${email}`);
+            return data;
+        } catch (error) {
+            console.error('Error al verificar cliente ⚠️:', error.message);
+            return null;
+        }
+    }
+
+    async registrarCliente(info) {
+        try {
+            const clienteExistente = await this.verificarCliente(info.correoElectronico);
+            if (clienteExistente) {
+                return 'El cliente ya está registrado. Por favor, inicia sesión con tu correo 😇.';
+            }
+            info.consentimiento = true;
+            await axios.post('http://localhost:8080/api/v1/clientes/crear', info);
+            return '¡Registro exitoso! 🎉 \n Ahora puedes iniciar sesión y acceder al sistema de reservas 🛏.';
+        } catch (error) {
+            console.error('Error al registrar cliente:', error.message);
+            return 'Hubo un error al procesar tu registro. Por favor intenta más tarde ⚠️.';
+        }
+    }
+
+    async obtenerHabitacionesDisponibles() {
+        try {
+            const { data } = await axios.get('http://localhost:8080/api/v1/habitaciones/disponibilidad');
+            return data;
+        } catch (error) {
+            console.error('Error al obtener habitaciones disponibles:', error.message);
+            return [];
+        }
+    }
+
+    async obtenerHabitacionPorId(habitacionId) {
+        try {
+            const { data } = await axios.get(`http://localhost:8080/api/v1/habitaciones/obtener/${habitacionId}`);
+            return data;
+        } catch (error) {
+            console.error('Error al obtener habitación por ID:', error.message);
+            return null;
+        }
+    }
+
+    async confirmarReserva(reservaInfo) {
+        try {
+            await axios.post('http://localhost:8080/api/v1/reservas/crear', reservaInfo);
+            return '¡Reserva confirmada con éxito! 🎉 Gracias por usar nuestro servicio.';
+        } catch (error) {
+            console.error('Error al confirmar la reserva:', error.message);
+            return 'Hubo un problema al confirmar tu reserva. Por favor intenta nuevamente.';
         }
     }
 
@@ -190,107 +201,76 @@ class MyBot extends ActivityHandler {
         });
     }
 
-    async verificarCliente(email) {
-        try {
-            const { data } = await axios.get(`http://localhost:8080/api/v1/clientes/obtener-por-correo?correo=${email}`);
-            return data;
-        } catch (error) {
-            console.error('Error al verificar cliente:', error.message);
-            return null;
-        }
-    }
-
-    async registrarCliente(info) {
-        try {
-            const clienteExistente = await this.verificarCliente(info.correoElectronico);
-            if (clienteExistente) {
-                return 'El cliente ya está registrado. Por favor, inicia sesión con tu correo.';
-            }
-
-            info.consentimiento = true;
-            await axios.post('http://localhost:8080/api/v1/clientes/crear', info);
-            return '¡Registro exitoso! Ahora puedes acceder al sistema de reservas 🎉.';
-        } catch (error) {
-            console.error('Error al registrar cliente:', error.message);
-            return 'Hubo un error al procesar tu registro. Por favor intenta más tarde.';
-        }
-    }
-
-    async obtenerHabitacionesDisponibles() {
-        try {
-            const { data } = await axios.get('http://localhost:8080/api/v1/habitaciones/disponibilidad');
-            return data.map(h => ({
-                title: `Habitación: ${h.tipo}`,
-                subtitle: `Capacidad: ${h.capacidad}, Precio: $${h.precioPorNoche}/noche`,
-                images: [{ url: h.imagenUrl }],
-                id: h.id
-            }));
-        } catch (error) {
-            console.error('Error al obtener habitaciones:', error.message);
-            return [];
-        }
-    }
-
-    async obtenerHabitacionPorId(habitacionId) {
-        try {
-           const response = await axios.get(`http://localhost:8080/api/v1/reservas/habitaciones/${habitacionId}`);
-           return response.data;
-        } catch (error) {
-           console.error(error);
-           return null;
-        }
-    }
-
-    async obtenerEmpleadoAsignado() {
-        try {
-            // Suponiendo que tienes una API que te proporciona el empleado asignado
-            const response = await axios.get('http://localhost:8080/api/v1/empleados/disponibilidad');
-            return response.data; // Asegúrate de que esto devuelve el empleado asignado
-        } catch (error) {
-            console.error('Error al obtener empleado asignado:', error);
-            return null; // O maneja el error de otra manera
-        }
-    }
-
-    crearFormularioReserva(habitacionId, empleadoId) {
+    createReservationForm(habitacionId) {
         return CardFactory.adaptiveCard({
             $schema: "http://adaptivecards.io/schemas/adaptive-card.json",
             type: "AdaptiveCard",
             version: "1.3",
             body: [
-                { type: "TextBlock", text: "Detalles de Reserva", weight: "Bolder", size: "Medium" },
-                { type: "Input.Text", id: "clienteId", placeholder: "ID del cliente" },
-                { type: "Input.Text", id: "habitacionId", value: `${habitacionId}`, isVisible: false },
-                { type: "Input.Text", id: "empleadoId", value: `${empleadoId}`, isVisible: false },
-                {
-                    type: "Input.Date",
-                    id: "fechaIngreso",
-                    label: "Fecha de Ingreso",
-                    min: new Date().toISOString().split('T')[0]
-                },
-                {
-                    type: "Input.Date",
-                    id: "fechaSalida",
-                    label: "Fecha de Salida",
-                    min: new Date().toISOString().split('T')[0]
-                },
+                { type: "TextBlock", text: "Crear Reserva", weight: "Bolder", size: "Medium" },
+                { type: "Input.Date", id: "fechaIngreso", placeholder: "Fecha de Ingreso" },
+                { type: "Input.Date", id: "fechaSalida", placeholder: "Fecha de Salida" },
                 {
                     type: "Input.ChoiceSet",
                     id: "metodoPago",
-                    label: "Método de Pago",
+                    placeholder: "Método de Pago",
                     choices: [
-                        { title: "Nequi", value: "Nequi" },
-                        { title: "Bancolombia", value: "Bancolombia" },
-                        { title: "Daviplata", value: "Daviplata" }
+                        { title: "Tarjeta de Crédito", value: "TARJETA_CREDITO" },
+                        { title: "Tarjeta de Débito", value: "TARJETA_DEBITO" },
+                        { title: "Transferencia Bancaria", value: "TRANSFERENCIA" }
                     ]
-                },
-                { type: "Input.Number", id: "total", placeholder: "Total a pagar" }
+                }
             ],
-            actions: [
-                { type: "Action.Submit", title: "Confirmar Reserva" }
-            ]
+            actions: [{ type: "Action.Submit", title: "Confirmar" }],
+            additionalData: { habitacionId }
         });
     }
+
+
+   createRoomCard(habitacion) {
+       return {
+           $schema: "http://adaptivecards.io/schemas/adaptive-card.json",
+           type: "AdaptiveCard",
+           version: "1.3",
+           body: [
+               {
+                   type: "TextBlock",
+                   text: `Habitación: ${habitacion.tipo}`,
+                   weight: "Bolder",
+                   size: "Medium"
+               },
+               {
+                   type: "Image",
+                   url: habitacion.imagenUrl,
+                   size: "Stretch"
+               },
+               {
+                   type: "TextBlock",
+                   text: `Capacidad: ${habitacion.capacidad}`,
+                   wrap: true
+               },
+               {
+                   type: "TextBlock",
+                   text: `Precio por noche: $${habitacion.precioPorNoche}`,
+                   wrap: true
+               },
+               {
+                   type: "TextBlock",
+                   text: habitacion.disponible ? "Disponible: Sí" : "Disponible: No",
+                   wrap: true
+               }
+           ],
+           actions: [
+               {
+                   type: "Action.Submit",
+                   title: "Reservar",
+                   data: { habitacionId: habitacion.id }
+               }
+           ]
+       };
+       console.log(habitacion);
+   }
+
 
 }
 

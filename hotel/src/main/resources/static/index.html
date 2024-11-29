@@ -103,7 +103,7 @@
            BANNER
         ========================= */
         .banner {
-           background-image: linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)), url('img/hotel.jpeg');
+           background-image: linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)), url('http://localhost:3978/img/hotel.jpeg');
            background-size: cover;
            background-position: center;
            color: #ffffff;
@@ -341,7 +341,8 @@
             <div class="row">
                 <div class="col-md-4 mb-4">
                     <div class="card shadow-sm">
-                        <img src="img/habitacion1.jpg" class="card-img-top" alt="Habitaciones Confortables">
+                        <img src="http://localhost:3978/img/habitacion30.jpg" class="card-img-top"
+                             alt="Habitaciones Confortables">
                         <div class="card-body text-center">
                             <h5 class="card-title">Habitaciones Confortables</h5>
                             <p class="card-text">Nuestras habitaciones están diseñadas para ofrecer una experiencia
@@ -351,7 +352,8 @@
                 </div>
                 <div class="col-md-4 mb-4">
                     <div class="card shadow-sm">
-                        <img src="img/comodidad.jpg" class="card-img-top" alt="Instalaciones Modernas">
+                        <img src="http://localhost:3978/img/comodidad.jpg" class="card-img-top"
+                             alt="Instalaciones Modernas">
                         <div class="card-body text-center">
                             <h5 class="card-title">Instalaciones Modernas</h5>
                             <p class="card-text">Disfruta de áreas modernas y bien equipadas para tu confort.</p>
@@ -360,7 +362,8 @@
                 </div>
                 <div class="col-md-4 mb-4">
                     <div class="card shadow-sm">
-                        <img src="img/bebidas.jpg" class="card-img-top" alt="Servicio Excepcional">
+                        <img src="http://localhost:3978/img/bebidas.jpg" class="card-img-top"
+                             alt="Servicio Excepcional">
                         <div class="card-body text-center">
                             <h5 class="card-title">Servicio Excepcional</h5>
                             <p class="card-text">Nuestro equipo está listo para cubrir todas tus necesidades.</p>
@@ -553,42 +556,58 @@
                 <div class="form-group">
                     <label for="reservaClienteId">👤 Cliente ID</label>
                     <input type="number" id="reservaClienteId" class="form-control"
-                           placeholder="Ingresa el ID del cliente"
-                           required>
+                           placeholder="Ingresa el ID del cliente" required>
                 </div>
+
                 <div class="form-group">
                     <label for="reservaHabitacionId">🛏️ Habitación ID</label>
                     <input type="number" id="reservaHabitacionId" class="form-control"
                            placeholder="Ingresa el ID de la habitación" required>
                 </div>
+
                 <div class="form-group">
-                    <label for="reservaEmpleadoId">👨‍💼 Empleado ID</label>
+                    <label for="reservaEmpleadoId">👨‍💼 Empleado ID (Opcional)</label>
                     <input type="number" id="reservaEmpleadoId" class="form-control"
-                           placeholder="Ingresa el ID del empleado" required>
+                           placeholder="Ingresa el ID del empleado">
                 </div>
+
                 <div class="form-group">
                     <label for="reservaFechaInicio">📅 Fecha Ingreso</label>
                     <input type="date" id="reservaFechaInicio" class="form-control"
                            placeholder="Ingresa la Fecha de Ingreso" required>
                 </div>
+
                 <div class="form-group">
                     <label for="reservaFechaFin">📆 Fecha Salida</label>
                     <input type="date" id="reservaFechaFin" class="form-control"
-                           placeholder="Ingresa la Fecha de Salida"
-                           required>
+                           placeholder="Ingresa la Fecha de Salida" required>
                 </div>
+
                 <div class="form-group">
-                    <label for="reservaTotal">💰 Total (COP)</label>
-                    <input type="number" id="reservaTotal" class="form-control" placeholder="Ingresa el Total" required>
+                    <label for="reservaTotal">💰 Total</label>
+                    <input type="number" id="reservaTotal" class="form-control" readonly>
                 </div>
-                <button type="submit" class="btn btn-success" id="accionReservaBtn">✅ Crear Reserva</button>
+
+                <div class="form-group">
+                    <label for="metodoPago">💳 Método de Pago</label>
+                    <select id="metodoPago" class="form-control" required>
+                        <option value="TARJETA_CREDITO">Tarjeta de Crédito</option>
+                        <option value="TARJETA_DEBITO">Tarjeta de Débito</option>
+                        <option value="EFECTIVO">Efectivo</option>
+                        <option value="TRANSFERENCIA_BANCARIA">Transferencia Bancaria</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <button type="submit" id="accionReservaBtn" class="btn btn-primary">Crear Reserva</button>
+                </div>
             </form>
         </div>
     </div>
 
-    <!-- Listado de Reservas -->
-    <h3 class="text-center mb-4">📋 Listado de Reservas</h3>
-    <div id="reservas-list" class="row justify-content-center"></div>
+    <!-- Lista de reservas -->
+    <h3 class="text-center mb-4">📋 Lista de Reservas</h3>
+    <div id="reservas-list" class="row"></div>
 
     <!-- Buscar Reservas -->
     <h3 class="text-center mb-4">🔍 Buscar Reservas</h3>
@@ -596,7 +615,7 @@
         <!-- Buscar por ID de reserva -->
         <div class="col-md-4 mb-3">
             <div class="card mb-4 col-md-8 mx-auto">
-                <div class="card-header">🆔Buscar por ID de Reserva</div>
+                <div class="card-header">🆔 Buscar por ID de Reserva</div>
                 <form id="buscarReservaPorIdForm"
                       onsubmit="event.preventDefault(); buscarReservaPorId(); return false;">
                     <div class="form-group">
@@ -650,6 +669,7 @@
         </div>
     </div>
 </div>
+
 
 <div id="inventarios-section" class="section content-section d-none">
     <h2 class="text-center">📦 Gestión de Inventarios</h2>
@@ -1455,185 +1475,244 @@
 
 
     // Mostrar reservas y cargar la lista
-    function mostrarReservas() {
-       ocultarSecciones();  // Oculta otras secciones si tienes otras además de la de reservas
-       document.getElementById('reservas-section').style.display = 'block';
-       obtenerReservas();
-    }
-
-    // Obtener las reservas
-     function obtenerReservas() {
-          axios.get(`${BASE_URL}/reservas/obtener`)
-             .then(response => {
-                  const reservasList = document.getElementById('reservas-list');
-                  reservasList.innerHTML = '';
-                        response.data.forEach(reserva => {
-                           reservasList.innerHTML += `
-                               <div class="col-md-4">
-                                   <div class="card mb-4">
-                                       <div class="card-body">
-                                           <p><strong>Reserva ID:</strong> ${reserva.id}</p>
-                                           <p><strong>Nombre Cliente:</strong> ${reserva.cliente.nombre} ${reserva.cliente.apellido}</p>
-                                           <p><strong>Nombre Empleado:</strong> ${reserva.empleado.nombre} ${reserva.empleado.apellido}</p>
-                                           <p><strong>Habitación ID:</strong> ${reserva.habitacion.id}</p>
-                                           <p><strong>Desde:</strong> ${reserva.fechaIngreso} <strong>Hasta:</strong> ${reserva.fechaSalida}</p>
-                                           <p><strong>Total (COP):</strong> $${reserva.total}</p>
-                                           <div class="card-buttons d-flex justify-content-start">
-                                               <button class="btn btn-danger btn-sm"  onclick="eliminarReserva(${reserva.id})">Eliminar</button>
-                                               <button class="btn btn-warning btn-sm"  onclick="editarReserva(${reserva.id})">Actualizar</button>
-                                           </div>
-                                      </div>
-                                  </div>
-                              </div>`;
-                       });
-                })
-               .catch(error => {
-                   console.error("Error al obtener reservas:", error);
-                   alert("Hubo un problema al cargar las reservas.");
-               });
-    }
-
-     // Eliminar una reserva
-     function eliminarReserva(id) {
-         axios.delete(`${BASE_URL}/reservas/eliminar/${id}`)
-               .then(response => {
-                  alert(response.data);
-                  obtenerReservas();
-              })
-              .catch(error => {
-                 console.error('Error al eliminar la reserva:', error);
-                 alert('Error al eliminar la reserva');
-              });
+     function mostrarReservas() {
+        ocultarSecciones();  // Oculta otras secciones si tienes otras además de la de reservas
+        document.getElementById('reservas-section').style.display = 'block';
+        obtenerReservas();
      }
 
-      // Editar una reserva
-      function editarReserva(id) {
-         axios.get(`${BASE_URL}/reservas/obtener/${id}`)
-              .then(response => {
-                    const reserva = response.data;
-                    document.getElementById('reservaId').value = reserva.id;
-                    document.getElementById('reservaClienteId').value = reserva.cliente.id;
-                    document.getElementById('reservaHabitacionId').value = reserva.habitacion.id;
-                    document.getElementById('reservaEmpleadoId').value = reserva.empleado.id;
-                    document.getElementById('reservaFechaInicio').value = reserva.fechaIngreso;
-                    document.getElementById('reservaFechaFin').value = reserva.fechaSalida;
-                    document.getElementById('reservaTotal').value = reserva.total;
-                    document.getElementById('accionReservaBtn').innerText = 'Actualizar Reserva';
-                })
-                .catch(error => {
-                      console.error('Error al editar la reserva:', error);
-                      alert('Error al editar la reserva');
+     function ocultarSecciones() {
+       document.getElementById('reservas-section').style.display = 'none';
+     }
+
+     obtenerReservas();
+
+     function limpiarFormularioReserva() {
+        document.getElementById('reservaId').value = '';
+        document.getElementById('reservaClienteId').value = '';
+        document.getElementById('reservaHabitacionId').value = '';
+        document.getElementById('reservaEmpleadoId').value = '';
+        document.getElementById('reservaFechaInicio').value = '';
+        document.getElementById('reservaFechaFin').value = '';
+        document.getElementById('reservaTotal').value = '';
+        document.getElementById('metodoPago').value = '';
+        document.getElementById('accionReservaBtn').innerText = "Crear Reserva";
+        document.getElementById('accionReservaBtn').onclick = crearReserva;
+    }
+
+    function validarFormularioReserva() {
+        const cliente = document.getElementById('reservaClienteId').value;
+        const habitacion = document.getElementById('reservaHabitacionId').value;
+        const fechaInicio = document.getElementById('reservaFechaInicio').value;
+        const fechaFin = document.getElementById('reservaFechaFin').value;
+        const metodoPago = document.getElementById('metodoPago').value;
+
+        if (!cliente || !habitacion || !fechaInicio || !fechaFin || !metodoPago) {
+            alert("Por favor, llena todos los campos.");
+            return false;
+        }
+        return true;
+    }
+
+
+     function obtenerReservas() {
+        axios.get(`${BASE_URL}/reservas/obtener`)
+            .then(response => {
+                const reservasList = document.getElementById('reservas-list');
+                reservasList.innerHTML = '';  // Limpiar la lista antes de agregar
+                response.data.forEach(reserva => {
+                    reservasList.innerHTML += `
+                        <div class="col-md-4">
+                            <div class="card mb-4">
+                                <div class="card-body">
+                                    <p><strong>ID de reserva:</strong> ${reserva.id}</p>
+                                    <p><strong>Cliente:</strong> ${reserva.cliente.nombre} ${reserva.cliente.apellido}</p>
+                                    <p><strong>Empleado:</strong> ${reserva.empleado.nombre} ${reserva.empleado.apellido}</p>
+                                    <p><strong>Habitación ID:</strong> ${reserva.habitacion.id}</p>
+                                    <p><strong>Desde:</strong> ${reserva.fechaIngreso} <strong>Hasta:</strong> ${reserva.fechaSalida}</p>
+                                    <p><strong>Total (COP):</strong> ${reserva.total}</p>
+                                    <div class="card-buttons d-flex justify-content-start">
+                                        <button class="btn btn-danger btn-sm" onclick="eliminarReserva(${reserva.id})">Eliminar</button>
+                                        <button class="btn btn-warning btn-sm" onclick="editarReserva(${reserva.id})">Actualizar</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    `;
                 });
-      }
+            })
+            .catch(error => {
+                alert('Error al obtener las reservas: ' + error);
+            });
+     }
 
-      // Crear o actualizar una reserva
-      function crearReserva() {
-              const reservaId = document.getElementById('reservaId').value;
-              const reservaData = {
-                  cliente: { id: document.getElementById('reservaClienteId').value },
-                  habitacion: { id: document.getElementById('reservaHabitacionId').value },
-                  empleado: { id: document.getElementById('reservaEmpleadoId').value },
-                  fechaIngreso: document.getElementById('reservaFechaInicio').value,
-                  fechaSalida: document.getElementById('reservaFechaFin').value,
-                  total: parseFloat(document.getElementById('reservaTotal').value)
-              };
 
-              if (reservaId) {
-                  axios.put(`${BASE_URL}/reservas/actualizar/${reservaId}`, reservaData)
-                      .then(response => {
-                          alert("Reserva actualizada correctamente");
-                          document.getElementById('reservaForm').reset();
-                          obtenerReservas();
-                          document.getElementById('accionReservaBtn').innerText = 'Crear Reserva';
-                      })
-                      .catch(error => {
-                          console.error("Error al actualizar la reserva:", error);
-                          alert("Error al actualizar la reserva");
-                      });
-              } else {
-                  axios.post(`${BASE_URL}/reservas/crear`, reservaData)
-                      .then(response => {
-                          alert("Reserva creada correctamente");
-                          document.getElementById('reservaForm').reset();
-                          obtenerReservas();
-                      })
-                      .catch(error => {
-                          console.error("Error al crear la reserva:", error);
-                          alert("Error al crear la reserva");
-                      });
-              }
-      }
+    // Eliminar una reserva
+    function eliminarReserva(reservaId) {
+        axios.delete(`${BASE_URL}/reservas/eliminar/${reservaId}`)
+            .then(response => {
+                alert('Reserva eliminada correctamente');
+                obtenerReservas(); // Actualizar lista de reservas
+            })
+            .catch(error => {
+                alert('Error al eliminar la reserva: ' + error);
+            });
+    }
 
-      // Función para mostrar los resultados de búsqueda
-      function mostrarResultadosDeBusqueda(data) {
-          const resultadosBusqueda = document.getElementById('resultados-busqueda');
-          resultadosBusqueda.innerHTML = ''; // Limpiar lista de resultados anteriores
 
-          const reservas = Array.isArray(data) ? data : [data]; // Asegurarse de que sea un array
+    function editarReserva(reservaId) {
+        axios.get(`${BASE_URL}/reservas/obtener/${reservaId}`)
+            .then(response => {
+                const reserva = response.data;
 
-          if (reservas.length === 0) {
-              resultadosBusqueda.innerHTML = "<p>No se encontraron reservas.</p>";
-              return;
-          }
+                document.getElementById('reservaId').value = reserva.id;
+                document.getElementById('reservaClienteId').value = reserva.cliente.id;
+                document.getElementById('reservaHabitacionId').value = reserva.habitacion.id;
+                document.getElementById('reservaEmpleadoId').value = reserva.empleado?.id || '';
+                document.getElementById('reservaFechaInicio').value = reserva.fechaIngreso;
+                document.getElementById('reservaFechaFin').value = reserva.fechaSalida;
+                document.getElementById('metodoPago').value = reserva.metodoPago;
 
-          reservas.forEach(reserva => {
-              resultadosBusqueda.innerHTML += `
-                  <div class="card mb-3">
-                      <div class="card-body">
-                          <div class="list-group-item">
-                              <div class="d-flex align-items-center">
-                                  <div>
-                                      <p><strong>Reserva ID:</strong> ${reserva.id}</p>
-                                      <p><strong>Cliente:</strong> ${reserva.cliente.nombre} ${reserva.cliente.apellido}</p>
-                                      <p><strong>Empleado:</strong> ${reserva.empleado.nombre} ${reserva.empleado.apellido}</p>
-                                      <p><strong>Habitación ID:</strong> ${reserva.habitacion.id}</p>
-                                      <p><strong>Desde:</strong> ${reserva.fechaIngreso} <strong>Hasta:</strong> ${reserva.fechaSalida}</p>
-                                      <p><strong>Total (COP):</strong> $${reserva.total}</p>
-                                      <div class="card-buttons d-flex justify-content-start">
-                                          <button class="btn btn-danger btn-sm"  onclick="eliminarReserva(${reserva.id})">Eliminar</button>
-                                          <button class="btn btn-warning btn-sm"  onclick="editarReserva(${reserva.id})">Actualizar</button>
-                                      </div>
-                                  </div>
-                              </div>
-                          </div>
-                      </div>
-                  </div>`;
-          });
-      }
+                document.getElementById('accionReservaBtn').innerText = "Actualizar Reserva";
+                document.getElementById('accionReservaBtn').onclick = () => actualizarReserva(reserva.id);
+            })
+            .catch(error => {
+                alert('Error al obtener la reserva: ' + error);
+            });
+    }
 
-      // Función para buscar por ID de reserva
-      function buscarReservaPorId() {
-          const reservaId = document.getElementById('busquedaId').value;
-          if (!reservaId) {
-              alert("Por favor ingresa el ID de la reserva.");
-              return;
-          }
-          axios.get(`${BASE_URL}/reservas/obtener/${reservaId}`)
-              .then(response => {
-                  mostrarResultadosDeBusqueda(response.data);
-              })
-              .catch(error => {
-                  console.error("Error al buscar reserva por ID:", error);
-                  alert("No se encontró la reserva.");
-              });
-      }
+    function actualizarReserva(reservaId) {
+        const reserva = {
+            cliente: { id: document.getElementById('reservaClienteId').value },
+            habitacion: { id: document.getElementById('reservaHabitacionId').value },
+            empleado: document.getElementById('reservaEmpleadoId').value
+                ? { id: document.getElementById('reservaEmpleadoId').value }
+                : null,
+            fechaIngreso: document.getElementById('reservaFechaInicio').value,
+            fechaSalida: document.getElementById('reservaFechaFin').value,
+            metodoPago: document.getElementById('metodoPago').value,
+            total: document.getElementById('reservaTotal').value
+        };
 
-      // Función para buscar por ID de empleado
-      function buscarReservaPorEmpleado() {
-          const empleadoId = document.getElementById('busquedaEmpleadoId').value;
-          if (!empleadoId) {
-              alert("Por favor ingresa el ID del empleado.");
-              return;
-          }
-          axios.get(`${BASE_URL}/reservas/empleado/${empleadoId}`)
-              .then(response => {
-                  mostrarResultadosDeBusqueda(response.data);
-              })
-              .catch(error => {
-                  console.error("Error al buscar reservas por empleado:", error);
-                  alert("No se encontraron reservas para este empleado.");
-              });
-      }
+        axios.put(`${BASE_URL}/reservas/actualizar/${reservaId}`, reserva)
+            .then(response => {
+                alert('Reserva actualizada correctamente');
+                limpiarFormularioReserva();
+                obtenerReservas();
+            })
+            .catch(error => {
+                alert('Error al actualizar la reserva: ' + error.response?.data || error.message);
+            });
+    }
+
+    function crearReserva() {
+        if (!validarFormularioReserva()) return;
+
+        const reserva = {
+            cliente: { id: document.getElementById('reservaClienteId').value },
+            habitacion: { id: document.getElementById('reservaHabitacionId').value },
+            empleado: { id: document.getElementById('reservaEmpleadoId').value || null },
+            fechaIngreso: document.getElementById('reservaFechaInicio').value,
+            fechaSalida: document.getElementById('reservaFechaFin').value,
+            metodoPago: document.getElementById('metodoPago').value
+        };
+
+        axios.post(`${BASE_URL}/reservas/crear`, reserva)
+            .then(response => {
+                alert('Reserva creada correctamente.');
+                limpiarFormularioReserva();
+                obtenerReservas(); // Actualizar lista de reservas
+            })
+
+    }
+
+
+    function calcularTotal() {
+        const fechaInicio = new Date(document.getElementById('reservaFechaInicio').value);
+        const fechaFin = new Date(document.getElementById('reservaFechaFin').value);
+
+        if (fechaInicio && fechaFin && fechaInicio < fechaFin) {
+            const dias = (fechaFin - fechaInicio) / (1000 * 60 * 60 * 24); // Diferencia en días
+            const precioPorDia = 100000; // Por ejemplo, 100,000 COP por día
+            document.getElementById('reservaTotal').value = dias * precioPorDia;
+        } else {
+            document.getElementById('reservaTotal').value = '';
+        }
+    }
+
+    // Asocia el cálculo al cambio en las fechas
+    document.getElementById('reservaFechaInicio').addEventListener('change', calcularTotal);
+    document.getElementById('reservaFechaFin').addEventListener('change', calcularTotal);
+
+
+    // Función para mostrar los resultados de búsqueda
+    function mostrarResultadosDeBusqueda(data) {
+        const resultadosBusqueda = document.getElementById('resultados-busqueda');
+        resultadosBusqueda.innerHTML = ''; // Limpiar lista de resultados anteriores
+        const reservas = Array.isArray(data) ? data : [data]; // Asegurarse de que sea un array
+        if (reservas.length === 0) {
+            resultadosBusqueda.innerHTML = "<p>No se encontraron reservas.</p>";
+            return;
+        }
+        reservas.forEach(reserva => {
+            resultadosBusqueda.innerHTML += `
+                <div class="card mb-3">
+                    <div class="card-body">
+                        <div class="list-group-item">
+                            <div class="d-flex align-items-center">
+                                <div>
+                                    <p><strong>Reserva ID:</strong> ${reserva.id}</p>
+                                    <p><strong>Cliente:</strong> ${reserva.cliente.nombre} ${reserva.cliente.apellido}</p>
+                                    <p><strong>Empleado:</strong> ${reserva.empleado.nombre} ${reserva.empleado.apellido}</p>
+                                    <p><strong>Habitación ID:</strong> ${reserva.habitacion.id}</p>
+                                    <p><strong>Desde:</strong> ${reserva.fechaIngreso} <strong>Hasta:</strong> ${reserva.fechaSalida}</p>
+                                    <p><strong>Total (COP):</strong> ${reserva.total}</p>
+                                    <div class="card-buttons d-flex justify-content-start">
+                                        <button class="btn btn-danger btn-sm" onclick="eliminarReserva(${reserva.id})">Eliminar</button>
+                                        <button class="btn btn-warning btn-sm" onclick="editarReserva(${reserva.id})">Actualizar</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+        });
+    }
+
+     // Función para buscar por ID de reserva
+     function buscarReservaPorId() {
+         const reservaId = document.getElementById('busquedaId').value;
+         if (!reservaId) {
+             alert("Por favor ingresa el ID de la reserva.");
+             return;
+         }
+         axios.get(`${BASE_URL}/reservas/obtener/${reservaId}`)
+             .then(response => {
+                 mostrarResultadosDeBusqueda(response.data);
+             })
+             .catch(error => {
+                 console.error("Error al buscar reserva por ID:", error);
+                 alert("No se encontró la reserva.");
+             });
+     }
+
+     // Función para buscar por ID de empleado
+     function buscarReservaPorEmpleado() {
+         const empleadoId = document.getElementById('busquedaEmpleadoId').value;
+         if (!empleadoId) {
+             alert("Por favor ingresa el ID del empleado.");
+             return;
+         }
+         axios.get(`${BASE_URL}/reservas/empleado/${empleadoId}`)
+             .then(response => {
+                 mostrarResultadosDeBusqueda(response.data);
+             })
+             .catch(error => {
+                 console.error("Error al buscar reservas por empleado:", error);
+                 alert("No se encontraron reservas para este empleado.");
+             });
+     }
 
     // Función para buscar por ID de cliente
      function buscarReservaPorCliente() {
@@ -1650,11 +1729,6 @@
                   console.error("Error al buscar reservas por cliente:", error);
                   alert("No se encontraron reservas para este cliente.");
               });
-     }
-
-     // Ocultar todas las secciones
-     function ocultarSecciones() {
-       document.getElementById('reservas-section').style.display = 'none';
      }
 
      document.addEventListener('DOMContentLoaded', () => {

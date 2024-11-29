@@ -26,6 +26,7 @@ public class EmpleadoServicio {
         this.reservaRepositorio = reservaRepositorio;
     }
 
+    @Transactional
     public void crearEmpleado(Empleado empleado) {
         validarInformacionEmpleado(empleado);
 
@@ -36,6 +37,7 @@ public class EmpleadoServicio {
         empleadoRepositorio.save(empleado);
     }
 
+    @Transactional
     public void actualizarEmpleado(Long empleadoId, Empleado empleado) {
         Empleado empleadoActualizar = empleadoRepositorio.findById(empleadoId)
                 .orElseThrow(() -> new EmpleadoNoEncontradoExcepcion(empleadoId));
@@ -50,6 +52,7 @@ public class EmpleadoServicio {
         empleadoRepositorio.save(empleadoActualizar);
     }
 
+    @Transactional
     private void validarInformacionEmpleado(Empleado empleado) {
         if ((empleado.getNombre() == null) ||
                 (empleado.getApellido() == null) ||
@@ -58,18 +61,22 @@ public class EmpleadoServicio {
         }
     }
 
+    @Transactional
     public List<Empleado> obtenerEmpleados() {
         return empleadoRepositorio.findAll();
     }
 
+    @Transactional
     public List<Empleado> obtenerEmpleadosDisponibles() {
         return empleadoRepositorio.findByDisponibleTrue();
     }
 
+    @Transactional
     public List<Empleado> obtenerEmpleadosPorRol(String rol) {
         return empleadoRepositorio.findByRol(rol);
     }
 
+    @Transactional
     public Empleado obtenerEmpleadoPorId(Long empleadoId) {
         return empleadoRepositorio.findById(empleadoId).orElseThrow(() -> new EmpleadoNoEncontradoExcepcion(empleadoId));
     }
@@ -81,6 +88,7 @@ public class EmpleadoServicio {
         empleadoRepositorio.delete(empleado);
     }
 
+    @Transactional
     public Map<String, Double> calcularPagoEmpleados() {
         List<Empleado> empleados = empleadoRepositorio.findAll();
         Map<String, Double> pagos = new HashMap<>();

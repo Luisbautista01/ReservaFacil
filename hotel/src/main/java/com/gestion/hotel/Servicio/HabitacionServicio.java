@@ -5,6 +5,7 @@ import com.gestion.hotel.Modelo.Habitacion;
 import com.gestion.hotel.Repositorio.HabitacionRepositorio;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -17,11 +18,12 @@ public class HabitacionServicio {
         this.habitacionRepositorio = habitacionRepositorio;
     }
 
+    @Transactional
     public void crearHabitacion(Habitacion habitacion) {
-        habitacion.setImagenUrl("http://localhost:3978/" + habitacion.getImagenUrl());
         habitacionRepositorio.save(habitacion);
     }
 
+    @Transactional
     public void actualizarHabitacion(Long habitacionId, Habitacion habitacion) {
         Habitacion habitacionActualizar = habitacionRepositorio.findById(habitacionId)
                 .orElseThrow(() -> new HabitacionNoEncontradaExcepcion(habitacionId));
@@ -35,26 +37,27 @@ public class HabitacionServicio {
         habitacionRepositorio.save(habitacionActualizar);
     }
 
+    @Transactional
     public List<Habitacion> obtenerHabitaciones() {
-        List<Habitacion> habitaciones = habitacionRepositorio.findAll();
-        // Asegúrate de que cada habitación tenga la URL completa de la imagen
-        habitaciones.forEach(h -> h.setImagenUrl("http://localhost:3978/img/" + h.getImagenUrl()));
-
-        return habitaciones;
+        return habitacionRepositorio.findAll();
     }
 
+    @Transactional
     public List<Habitacion> obtenerHabitacionesDisponibles() {
         return habitacionRepositorio.findByDisponibleTrue();
     }
 
+    @Transactional
     public List<Habitacion> obtenerHabitacionesPorTipo(String tipo) {
         return habitacionRepositorio.findByTipo(tipo);
     }
 
+    @Transactional
     public Habitacion obtenerHabitacionPorId(Long habitacionId) {
         return habitacionRepositorio.findById(habitacionId).orElseThrow(() -> new HabitacionNoEncontradaExcepcion(habitacionId));
     }
 
+    @Transactional
     public void eliminarHabitacion(Long habitacionId) {
         Habitacion habitacion = habitacionRepositorio.findById(habitacionId)
                 .orElseThrow(() -> new HabitacionNoEncontradaExcepcion(habitacionId));

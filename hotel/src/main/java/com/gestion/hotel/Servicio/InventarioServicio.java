@@ -8,6 +8,7 @@ import com.gestion.hotel.Repositorio.HabitacionRepositorio;
 import com.gestion.hotel.Repositorio.InventarioRepositorio;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -22,6 +23,7 @@ public class InventarioServicio {
         this.habitacionRepositorio = habitacionRepositorio;
     }
 
+    @Transactional
     public Inventario agregarInventario(Inventario inventario) {
         // Validación de la existencia de la habitación a la que se asociará el inventario
         Habitacion habitacion = habitacionRepositorio.findById(inventario.getHabitacion().getId())
@@ -34,6 +36,7 @@ public class InventarioServicio {
         return inventarioRepositorio.save(inventario);
     }
 
+    @Transactional
     public List<Inventario> obtenerInventarios() {
         return inventarioRepositorio.findAll();
     }
@@ -43,6 +46,7 @@ public class InventarioServicio {
                 .orElseThrow(() -> new InventarioNoEncontradoExcepcion(inventarioId));
     }
 
+    @Transactional
     public void actualizarInventario(Long inventarioId, Inventario inventario) {
         Inventario inventarioActualizar = inventarioRepositorio.findById(inventarioId)
                 .orElseThrow(() -> new InventarioNoEncontradoExcepcion(inventarioId));
@@ -63,6 +67,7 @@ public class InventarioServicio {
         System.out.println("Inventario actualizado con la habitación ID: " + habitacion.getId());
     }
 
+    @Transactional
     public void eliminarInventario(Long inventarioId) {
         if (!inventarioRepositorio.existsById(inventarioId)) {
             throw new InventarioNoEncontradoExcepcion(inventarioId);

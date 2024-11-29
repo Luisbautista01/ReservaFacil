@@ -9,6 +9,7 @@ import com.gestion.hotel.Repositorio.InventarioRepositorio;
 import com.gestion.hotel.Repositorio.ReservaRepositorio;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.util.HashMap;
@@ -50,6 +51,7 @@ public class ReporteServicio {
         MESES.put(12, "Diciembre");
     }
 
+    @Transactional
     public Map<String, Object> generarReporteIngresos() {
         List<Object[]> ingresosMes = reservaRepositorio.obtenerIngresosPorMes();
 
@@ -80,6 +82,7 @@ public class ReporteServicio {
         return reporte;
     }
 
+    @Transactional
     public ReporteAnualDTO generarReporteIngresosPorAnio(int anio) {
         List<Object[]> ingresosMes = reservaRepositorio.obtenerIngresosPorMesYAnio(anio);
 
@@ -104,18 +107,19 @@ public class ReporteServicio {
         return new ReporteAnualDTO(ingresosTotales, reservaRepositorio.count(), reporteMensual);
     }
 
-
+    @Transactional
     public List<Inventario> generarInventarioPorHabitacion(Long habitacionId) {
         return inventarioRepositorio.findByHabitacionId(habitacionId);
     }
 
+    @Transactional
     // Método para calcular ingresos netos de cada habitación
     public List<Map<String, Object>> generarIngresosNetos() {
         return habitacionRepositorio.findAll().stream()
                 .map(habitacion -> {
                     // Calcular ingresos por habitación (basado en el precio por noche y reservas)
                     double ingresos = habitacion.getReservas().stream()
-                            .mapToDouble(reserva -> reserva.getTotal())
+                            .mapToDouble(Reserva::getTotal)
                             .sum();
 
                     // Calcular gastos por habitación (basado en inventarios)
@@ -138,6 +142,7 @@ public class ReporteServicio {
                 .collect(Collectors.toList());
     }
 
+    @Transactional
     public Map<String, Object> generarGananciasTotales() {
         List<Map<String, Object>> ingresosNetosPorHabitacion = generarIngresosNetos();
 
@@ -152,6 +157,7 @@ public class ReporteServicio {
     }
 
     // Método para calcular ganancias y pérdidas, considerando el pago a empleados
+    @Transactional
     public Map<String, Object> calcularGananciasYPerdidasConEmpleados() {
         double ingresosTotales = calcularIngresosTotales();
         double gastosTotales = calcularGastosTotales();
@@ -176,12 +182,14 @@ public class ReporteServicio {
         return reporte;
     }
 
+    @Transactional
     private double calcularGastosTotales() {
         return inventarioRepositorio.findAll().stream()
                 .mapToDouble(Inventario::getCosto)
                 .sum();
     }
 
+    @Transactional
     private double calcularIngresosTotales() {
         return reservaRepositorio.findAll().stream()
                 .mapToDouble(Reserva::getTotal)

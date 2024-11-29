@@ -1,5 +1,6 @@
 package com.gestion.hotel.Modelo;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
 import jakarta.persistence.*;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
@@ -23,7 +24,16 @@ public class Reserva {
         TARJETA_CREDITO,
         TARJETA_DEBITO,
         EFECTIVO,
-        TRANSFERENCIA_BANCARIA
+        TRANSFERENCIA_BANCARIA;
+
+        @JsonCreator
+        public static MetodoPago fromString(String value) {
+            try {
+                return MetodoPago.valueOf(value.toUpperCase());
+            } catch (IllegalArgumentException e) {
+                throw new IllegalArgumentException("Valor no válido para MetodoPago: " + value);
+            }
+        }
     }
 
     @ManyToOne
