@@ -1,4 +1,4 @@
-package com.gestion.hotel.Modelo;
+/*package com.gestion.hotel.Modelo;
 
 import java.time.LocalDate;
 
@@ -85,7 +85,7 @@ public class BotRequest {
     public void setFechaSalida(LocalDate fechaSalida) {
         this.fechaSalida = fechaSalida;
     }
-}
+}*/
 
 
 

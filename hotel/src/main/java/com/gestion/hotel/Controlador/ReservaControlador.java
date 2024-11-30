@@ -2,6 +2,9 @@ package com.gestion.hotel.Controlador;
 
 import com.gestion.hotel.Excepciones.ReservaNoEncontradaExcepcion;
 import com.gestion.hotel.Modelo.Reserva;
+import com.gestion.hotel.Repositorio.ClienteRepositorio;
+import com.gestion.hotel.Repositorio.EmpleadoRepositorio;
+import com.gestion.hotel.Repositorio.HabitacionRepositorio;
 import com.gestion.hotel.Servicio.ReservaServicio;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -10,28 +13,33 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+
 @RestController
 @RequestMapping("/api/v1/reservas")
 @CrossOrigin(origins = "http://localhost:8080")
 public class ReservaControlador {
     private final ReservaServicio reservaServicio;
+    private final HabitacionRepositorio habitacionRepositorio;
+    private final ClienteRepositorio clienteRepositorio;
+    private final EmpleadoRepositorio empleadoRepositorio;
 
     @Autowired
-    public ReservaControlador(ReservaServicio reservaServicio) {
+    public ReservaControlador(ReservaServicio reservaServicio, HabitacionRepositorio habitacionRepositorio, ClienteRepositorio clienteRepositorio, EmpleadoRepositorio empleadoRepositorio) {
         this.reservaServicio = reservaServicio;
+        this.habitacionRepositorio = habitacionRepositorio;
+        this.clienteRepositorio = clienteRepositorio;
+        this.empleadoRepositorio = empleadoRepositorio;
     }
 
     @PostMapping("/crear")
-    public ResponseEntity<Reserva> crearReserva(@RequestBody Reserva reserva) {
-        try {
-            Reserva nuevaReserva = reservaServicio.crearReserva(reserva);
-            return ResponseEntity.status(HttpStatus.CREATED).body(nuevaReserva);
-        } catch (IllegalArgumentException | IllegalStateException e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+    public ResponseEntity<String> crearReserva(@RequestBody Reserva reserva) {
+        if (reserva.getId() != null) {
+            return ResponseEntity.badRequest().body("No se puede crear una reserva con un ID existente.");
         }
+        reservaServicio.crearReserva(reserva);
+        return ResponseEntity.ok("Reserva creada correctamente.");
     }
+
 
     @PutMapping("/actualizar/{reservaId}")
     public ResponseEntity<String> actualizarReserva(@PathVariable Long reservaId, @RequestBody Reserva reserva) {
@@ -45,7 +53,6 @@ public class ReservaControlador {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error al actualizar la reserva.");
         }
     }
-
 
     @GetMapping("/obtener")
     public ResponseEntity<List<Reserva>> obtenerReservas() {

@@ -1,6 +1,5 @@
 package com.gestion.hotel.Servicio;
 
-import com.gestion.hotel.Excepciones.InformacionIncompletaExcepcion;
 import com.gestion.hotel.Excepciones.ReservaNoEncontradaExcepcion;
 import com.gestion.hotel.Modelo.Empleado;
 import com.gestion.hotel.Modelo.Habitacion;
@@ -12,7 +11,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
 
@@ -30,28 +28,35 @@ public class ReservaServicio {
     }
 
     @Transactional
-    public Reserva crearReserva(Reserva reserva) {
+    public void crearReserva(Reserva reserva) {
+        System.out.println("Reserva recibida: " + reserva);
+        System.out.println("Habitación ID: " + reserva.getHabitacion().getId());
+        System.out.println("Cliente ID: " + reserva.getCliente().getId());
+        System.out.println("Empleado ID: " + reserva.getEmpleado().getId());
+        System.out.println("Fecha ingreso: " + reserva.getFechaIngreso());
+        System.out.println("Fecha salida: " + reserva.getFechaSalida());
+
+        // Calcular el total de la reserva
+        calcularTotalReserva(reserva);
+
+        // Mostrar el total calculado
+        System.out.println("Total Pago: " + reserva.getTotal());
+
         Habitacion habitacion = habitacionRepositorio.findById(reserva.getHabitacion().getId())
                 .orElseThrow(() -> new IllegalStateException("La habitación no existe."));
 
-        if (!habitacion.isDisponible()) {
-            throw new IllegalStateException("La habitación ya está ocupada.");
+        // Modificar esta consulta para manejar múltiples empleados disponibles
+        List<Empleado> empleadosDisponibles = empleadoRepositorio.findByDisponibleTrue();
+        if (empleadosDisponibles.isEmpty()) {
+            throw new IllegalStateException("No hay empleados disponibles.");
         }
 
-        Empleado empleado = empleadoRepositorio.findFirstByDisponibleTrue()
-                .orElseThrow(() -> new IllegalStateException("No hay empleados disponibles."));
-
-        // Validar fechas
-        if (reserva.getFechaIngreso().isBefore(LocalDate.now())) {
-            throw new IllegalArgumentException("La fecha de ingreso no puede ser anterior a la fecha actual.");
-        }
-
-        if (reserva.getFechaIngreso().isAfter(reserva.getFechaSalida())) {
-            throw new IllegalArgumentException("La fecha de ingreso debe ser antes de la fecha de salida.");
-        }
+        // Seleccionar el primer empleado disponible
+        Empleado empleado = empleadosDisponibles.get(0);  // O lógica para elegir uno según sea necesario
 
         // Calcular total
         calcularTotalReserva(reserva);
+
         if (reserva.getMetodoPago() == null) {
             throw new IllegalArgumentException("El método de pago es obligatorio.");
         }
@@ -67,33 +72,32 @@ public class ReservaServicio {
         habitacionRepositorio.save(habitacion);
         empleadoRepositorio.save(empleado);
 
-        return reservaRepositorio.save(reserva);
+        reservaRepositorio.save(reserva);
     }
 
     @Transactional
     public Reserva actualizarReserva(Long reservaId, Reserva reserva) {
-        Reserva reservaActualizar = reservaRepositorio.findById(reservaId)
+        Reserva reservaExistente = reservaRepositorio.findById(reservaId)
                 .orElseThrow(() -> new ReservaNoEncontradaExcepcion(reservaId));
 
-        reservaActualizar.setCliente(reserva.getCliente());
-        reservaActualizar.setHabitacion(reserva.getHabitacion());
-        reservaActualizar.setEmpleado(reserva.getEmpleado());
-        reservaActualizar.setFechaIngreso(reserva.getFechaIngreso());
-        reservaActualizar.setFechaSalida(reserva.getFechaSalida());
-        reservaActualizar.setTotal(reserva.getTotal());
-        reservaActualizar.setMetodoPago(reserva.getMetodoPago());
-
+        // Verificar si la habitación o empleado están disponibles
         if (!reserva.getHabitacion().isDisponible() &&
-                !reserva.getHabitacion().getId().equals(reservaActualizar.getHabitacion().getId())) {
-            throw new IllegalStateException("La habitación: " + reservaActualizar.getHabitacion().getId() + " no está disponible.");
+                !reserva.getHabitacion().getId().equals(reservaExistente.getHabitacion().getId())) {
+            throw new IllegalStateException("La habitación seleccionada no está disponible.");
         }
 
-        verificarInformacion(reservaActualizar);
+        // Actualizar los campos de la reserva
+        reservaExistente.setCliente(reserva.getCliente());
+        reservaExistente.setHabitacion(reserva.getHabitacion());
+        reservaExistente.setEmpleado(reserva.getEmpleado());
+        reservaExistente.setFechaIngreso(reserva.getFechaIngreso());
+        reservaExistente.setFechaSalida(reserva.getFechaSalida());
+        reservaExistente.setTotal(reserva.getTotal());
+        reservaExistente.setMetodoPago(reserva.getMetodoPago());
 
-        // Calcular total
-        calcularTotalReserva(reservaActualizar);
+        calcularTotalReserva(reservaExistente);
 
-        return reservaRepositorio.save(reservaActualizar);
+        return reservaRepositorio.save(reservaExistente);
     }
 
     @Transactional
@@ -106,19 +110,9 @@ public class ReservaServicio {
             throw new IllegalArgumentException("La estancia debe durar al menos un día.");
         }
 
+        // Calcular el total basado en el precio por noche de la habitación
         double total = diasEstadia * habitacion.getPrecioPorNoche();
         reserva.setTotal(total);
-    }
-
-    @Transactional
-    private void verificarInformacion(Reserva reserva) {
-        if (reserva.getFechaIngreso() == null || reserva.getFechaSalida() == null ||
-                reserva.getCliente() == null || reserva.getHabitacion() == null || reserva.getEmpleado() == null) {
-            throw new InformacionIncompletaExcepcion();
-        }
-        if (!reserva.getFechaIngreso().isBefore(reserva.getFechaSalida())) {
-            throw new IllegalArgumentException("La fecha de ingreso debe ser anterior a la fecha de salida.");
-        }
     }
 
     @Transactional

@@ -165,8 +165,9 @@
         /* =========================
            BOTONES
         ========================= */
+
          .btn-custom {
-            background-color: var(--color-primario);
+            background-color: var(--color-primario); // Botones primarios
             color: var(--color-blanco);
             border-radius: 50px;
             padding: 12px 20px;
@@ -1496,24 +1497,35 @@
         document.getElementById('reservaFechaFin').value = '';
         document.getElementById('reservaTotal').value = '';
         document.getElementById('metodoPago').value = '';
-        document.getElementById('accionReservaBtn').innerText = "Crear Reserva";
-        document.getElementById('accionReservaBtn').onclick = crearReserva;
+
+        const accionBtn = document.getElementById('accionReservaBtn');
+        accionBtn.innerText = "Crear Reserva";
+        accionBtn.onclick = crearReserva; // Asociar correctamente la función
     }
+
 
     function validarFormularioReserva() {
         const cliente = document.getElementById('reservaClienteId').value;
         const habitacion = document.getElementById('reservaHabitacionId').value;
-        const fechaInicio = document.getElementById('reservaFechaInicio').value;
-        const fechaFin = document.getElementById('reservaFechaFin').value;
+        const fechaInicio = new Date(document.getElementById('reservaFechaInicio').value);
+        const fechaFin = new Date(document.getElementById('reservaFechaFin').value);
         const metodoPago = document.getElementById('metodoPago').value;
 
-        if (!cliente || !habitacion || !fechaInicio || !fechaFin || !metodoPago) {
+        const fechaActual = new Date();
+        if (fechaActual < fechaInicio ) {
+            alert("La fecha de salida debe ser posterior a la fecha de ingreso.");
+            return false;
+        }
+        if (fechaFin <= fechaInicio) {
+            alert("La fecha de fin debe ser posterior a la fecha de inicio.");
+            return false;
+        }
+        if (!cliente || !habitacion || !metodoPago) {
             alert("Por favor, llena todos los campos.");
             return false;
         }
         return true;
     }
-
 
      function obtenerReservas() {
         axios.get(`${BASE_URL}/reservas/obtener`)
@@ -1573,8 +1585,10 @@
                 document.getElementById('reservaFechaFin').value = reserva.fechaSalida;
                 document.getElementById('metodoPago').value = reserva.metodoPago;
 
-                document.getElementById('accionReservaBtn').innerText = "Actualizar Reserva";
-                document.getElementById('accionReservaBtn').onclick = () => actualizarReserva(reserva.id);
+                // Configurar botón para actualizar
+                const accionBtn = document.getElementById('accionReservaBtn');
+                accionBtn.innerText = "Actualizar Reserva";
+                accionBtn.onclick = () => actualizarReserva(reserva.id); // Asociar correctamente la función
             })
             .catch(error => {
                 alert('Error al obtener la reserva: ' + error);
@@ -1585,14 +1599,20 @@
         const reserva = {
             cliente: { id: document.getElementById('reservaClienteId').value },
             habitacion: { id: document.getElementById('reservaHabitacionId').value },
-            empleado: document.getElementById('reservaEmpleadoId').value
-                ? { id: document.getElementById('reservaEmpleadoId').value }
-                : null,
+            empleado: document.getElementById('reservaEmpleadoId').value ? { id: document.getElementById('reservaEmpleadoId').value }: null,
             fechaIngreso: document.getElementById('reservaFechaInicio').value,
             fechaSalida: document.getElementById('reservaFechaFin').value,
             metodoPago: document.getElementById('metodoPago').value,
             total: document.getElementById('reservaTotal').value
         };
+
+        const fechaIngreso = new Date(document.getElementById('reservaFechaInicio').value);
+        const fechaActual = new Date();
+
+        if (fechaActual < fechaIngreso) {
+            alert("La fecha actual debe de ser posterior a la fecha de ingreso.");
+            return;
+        }
 
         axios.put(`${BASE_URL}/reservas/actualizar/${reservaId}`, reserva)
             .then(response => {
@@ -1608,37 +1628,50 @@
     function crearReserva() {
         if (!validarFormularioReserva()) return;
 
+        const reservaId = document.getElementById('reservaId').value;
+        if (reservaId) {
+            alert("No se puede crear una reserva existente. Usa el botón de actualizar.");
+            return;
+        }
+
         const reserva = {
             cliente: { id: document.getElementById('reservaClienteId').value },
             habitacion: { id: document.getElementById('reservaHabitacionId').value },
-            empleado: { id: document.getElementById('reservaEmpleadoId').value || null },
+            empleado: document.getElementById('reservaEmpleadoId').value ? { id: document.getElementById('reservaEmpleadoId').value } : null,
             fechaIngreso: document.getElementById('reservaFechaInicio').value,
             fechaSalida: document.getElementById('reservaFechaFin').value,
-            metodoPago: document.getElementById('metodoPago').value
+            metodoPago: document.getElementById('metodoPago').value,
         };
 
         axios.post(`${BASE_URL}/reservas/crear`, reserva)
             .then(response => {
                 alert('Reserva creada correctamente.');
                 limpiarFormularioReserva();
-                obtenerReservas(); // Actualizar lista de reservas
+                obtenerReservas();
             })
-
+            .catch(error => {
+                alert('Error al crear la reserva: ' + error);
+            });
     }
+
 
 
     function calcularTotal() {
         const fechaInicio = new Date(document.getElementById('reservaFechaInicio').value);
         const fechaFin = new Date(document.getElementById('reservaFechaFin').value);
+        const boton = document.getElementById('accionReservaBtn');
 
         if (fechaInicio && fechaFin && fechaInicio < fechaFin) {
-            const dias = (fechaFin - fechaInicio) / (1000 * 60 * 60 * 24); // Diferencia en días
-            const precioPorDia = 100000; // Por ejemplo, 100,000 COP por día
+            const dias = (fechaFin - fechaInicio) / (1000 * 60 * 60 * 24);
+            const precioPorDia = 100000;
             document.getElementById('reservaTotal').value = dias * precioPorDia;
+            boton.disabled = false;
         } else {
             document.getElementById('reservaTotal').value = '';
+            boton.disabled = true;
         }
     }
+
 
     // Asocia el cálculo al cambio en las fechas
     document.getElementById('reservaFechaInicio').addEventListener('change', calcularTotal);

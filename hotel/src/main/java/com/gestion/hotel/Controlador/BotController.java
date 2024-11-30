@@ -1,4 +1,4 @@
-package com.gestion.hotel.Controlador;
+/*pckage com.gestion.hotel.Controlador;
 
 import com.gestion.hotel.Modelo.*;
 import com.gestion.hotel.Repositorio.HabitacionRepositorio;
@@ -65,7 +65,7 @@ public class BotController {
 
             case "confirmar_reserva":
                 // Proceso de reserva
-                Reserva reserva = new Reserva();
+                ReservaDTO reserva = new ReservaDTO();
 
                 // Obtener el cliente usando el clienteId de la solicitud
                 cliente = clienteServicio.obtenerClientesPorId(botRequest.getClienteId());
@@ -89,7 +89,7 @@ public class BotController {
                 return ResponseEntity.badRequest().body("No entendí tu solicitud. ¿Puedes intentar nuevamente?");
         }
     }
-}
+}*/
 
 
 

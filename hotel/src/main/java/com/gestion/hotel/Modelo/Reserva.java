@@ -1,9 +1,9 @@
 package com.gestion.hotel.Modelo;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.*;
 import java.time.LocalDate;
-import java.time.temporal.ChronoUnit;
 
 @Entity
 @Table(name = "reserva")
@@ -12,7 +12,9 @@ public class Reserva {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @JsonFormat(pattern = "yyyy-MM-dd")
     private LocalDate fechaIngreso;
+    @JsonFormat(pattern = "yyyy-MM-dd")
     private LocalDate fechaSalida;
     @Column(nullable = false)
     private double total;
