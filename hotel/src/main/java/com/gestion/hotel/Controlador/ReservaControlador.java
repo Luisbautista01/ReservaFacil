@@ -13,7 +13,6 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-
 @RestController
 @RequestMapping("/api/v1/reservas")
 @CrossOrigin(origins = "http://localhost:8080")
@@ -39,7 +38,6 @@ public class ReservaControlador {
         reservaServicio.crearReserva(reserva);
         return ResponseEntity.ok("Reserva creada correctamente.");
     }
-
 
     @PutMapping("/actualizar/{reservaId}")
     public ResponseEntity<String> actualizarReserva(@PathVariable Long reservaId, @RequestBody Reserva reserva) {

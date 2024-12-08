@@ -17,6 +17,8 @@ public class Cliente {
     private String correoElectronico;
     private String telefono;
     private boolean consentimiento;
+    @Column(name="contraseña")
+    private String contrasenia;
 
     @OneToMany(mappedBy = "cliente")
     @JsonIgnore
@@ -32,6 +34,14 @@ public class Cliente {
         this.correoElectronico = correoElectronico;
         this.telefono = telefono;
         this.reservas = reservas;
+    }
+
+    public String getContrasenia() {
+        return contrasenia;
+    }
+
+    public void setContrasenia(String contrasenia) {
+        this.contrasenia = contrasenia;
     }
 
     public boolean isConsentimiento() {

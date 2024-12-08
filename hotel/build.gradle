@@ -23,6 +23,8 @@ dependencies {
 	runtimeOnly 'com.mysql:mysql-connector-j'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+	implementation 'com.itextpdf:itext7-core:7.2.2'
+	implementation files('libs/itext7-core-7.2.2.jar')
 }
 
 tasks.named('test') {
