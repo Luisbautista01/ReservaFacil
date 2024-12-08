@@ -1,7 +1,6 @@
 <div align="center">
 
 # 🌟 **Proyecto de Gestión de Reservas Hoteleras** 🌟
-
 </div>
 
 ---
