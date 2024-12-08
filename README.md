@@ -40,7 +40,7 @@ Este problema se traduce en una menor capacidad para atraer visitantes y en un s
 # 🏨 **ReservaFácil** - Simplificando la Gestión Hotelera
 
 <p align="center">
-  <img src="./hotel/src/main/resources/static/img/reservaFacil.png" alt="Logo de ReservaFácil" width="300">
+  <img src="./hotel/src/main/resources/static/img/logo.png" alt="Logo de ReservaFácil" width="300">
 </p>
 
 ---
