@@ -129,7 +129,14 @@ class MyBot extends ActivityHandler {
                         userState.loggedIn = false;
 
                         // Enviar mensaje de despedida
-                        await context.sendActivity('👋 **Has cerrado sesión con éxito.** ¡Vuelve cuando lo necesites! 😊');
+                        await context.sendActivity(`👋 **Has cerrado sesión con éxito.** ¡Vuelve cuando lo necesites! 😊`);
+                         const welcomeMessage = (`🌟 **¡Bienvenido/a!** 👋 Soy tu **asistente virtual** para reservas 😊.
+                             \n💻 **¿Qué te gustaría hacer hoy?**
+                                 \n🔐 **a. Iniciar sesión** 🏷️
+                                 \n✍️ **b. Registrarme** 📝
+                             \n🛠️ **Elige una opción para comenzar**.
+                         \n¡Estoy aquí para ayudarte a gestionar todo fácilmente! 🚀`);
+                         await context.sendActivity(welcomeMessage);
                     } else {
                         await context.sendActivity('❌ **No tienes una sesión activa.** \n\nEscribe "a" para iniciar sesión.');
                     }
@@ -211,7 +218,12 @@ class MyBot extends ActivityHandler {
                             await context.sendActivity({ attachments: [reservationForm] });
                         } else if (userMessage === "no") {
                             userState.awaitingReservationConfirmation = false;
-                            await context.sendActivity("La reserva ha sido cancelada 🚫. Si necesitas algo más, estoy a tu disposición.");
+                            await context.sendActivity(`La reserva ha sido cancelada 🚫. Si necesitas algo más, estoy a tu disposición.`);
+                            await context.sendActivity(`🌟 **¿Qué te gustaría hacer ahora?** 😊
+                               \n📝 **c. Crear una reserva**
+                               \n🏨 **d. Ver habitaciones disponibles**
+                               \n🚪 **salir. Cerrar sesión** 🔒
+                            \n✨Elige una opción o escribe la frase **salir** para cerrar sesión. ¡Estoy aquí para ayudarte! 💬 `);
                         } else {
                             await context.sendActivity(
                                 "Por favor responde con 'sí' para proceder o 'no' para cancelar."
@@ -246,6 +258,81 @@ class MyBot extends ActivityHandler {
             }
             await next();
         });
+    }
+
+    async obtenerReservasPorClienteId(clienteId) {
+        const response = await fetch(`http://localhost:8080/api/v1/usuarios-estado/cliente/${clienteId}`);
+        if (response.ok) {
+            return await response.json();
+        } else {
+            throw new Error("No se pudieron obtener las reservas");
+        }
+    }
+
+    async verificarCliente(email) {
+        try {
+            const { data } = await axios.get(`http://localhost:8080/api/v1/clientes/obtener-por-correo?correo=${email}`);
+            return data;
+        } catch (error) {
+            console.error('Error al verificar cliente ⚠️:', error.message);
+            return null;
+        }
+    }
+
+    async registrarCliente(info) {
+        try {
+            const clienteExistente = await this.verificarCliente(info.correoElectronico);
+            if (clienteExistente) {
+                return `El cliente con email ${info.correoElectronico} ya está registrado. \nPor favor, escribe "a" para iniciar sesión 😇.`;
+            }
+            info.consentimiento = true;
+            await axios.post('http://localhost:8080/api/v1/clientes/crear', info);
+            return '¡Registro exitoso! 🎉 \nAhora puedes iniciar sesión y acceder al sistema de reservas 🛏.\nEscribe "a" para iniciar sesión 😇.';
+        } catch (error) {
+            console.error('Error al registrar cliente:', error.message);
+            return 'Hubo un error al procesar tu registro. Por favor intenta más tarde ⚠️.';
+        }
+    }
+
+    async obtenerHabitacionesDisponibles() {
+        try {
+            const { data } = await axios.get('http://localhost:8080/api/v1/habitaciones/disponibilidad');
+            return data;
+        } catch (error) {
+            console.error('Error al obtener habitaciones disponibles:', error.message);
+            return [];
+        }
+    }
+
+    async obtenerEmpleadosDisponibles() {
+        try {
+            const { data } = await axios.get('http://localhost:8080/api/v1/empleados/disponibilidad');
+            return data.map(e => ({ ...e, id: Number(e.id) })); // Convertir ID a número si no lo es
+        } catch (error) {
+            console.error('Error al obtener empleados disponibles:', error.message);
+            return [];
+        }
+    }
+
+    async obtenerHabitacionPorId(habitacionId) {
+        try {
+            const { data } = await axios.get(`http://localhost:8080/api/v1/habitaciones/obtener/${habitacionId}`);
+            return data;
+        } catch (error) {
+            console.error('Error al obtener habitación por ID:', error.message);
+            return null;
+        }
+    }
+
+    async confirmarReserva(reservaInfo) {
+        try {
+            const response = await axios.post('http://localhost:8080/api/v1/usuarios-estado/crear', reservaInfo);
+            console.log("Reserva confirmada:", response.data);
+            return response.data; // Devuelve la información de la reserva
+        } catch (error) {
+            console.error("Error al confirmar la reserva:", error);
+            throw new Error("Hubo un problema al confirmar la reserva. Inténtalo más tarde.");
+        }
     }
 
     async handleFormSubmission(context, userState) {
@@ -381,40 +468,6 @@ class MyBot extends ActivityHandler {
         \n✨Elige una opción o escribe la frase **salir** para cerrar sesión. ¡Estoy aquí para ayudarte! 💬`);
     }
 
-    async obtenerReservasPorClienteId(clienteId) {
-        const response = await fetch(`http://localhost:8080/api/v1/usuarios-estado/cliente/${clienteId}`);
-        if (response.ok) {
-            return await response.json();
-        } else {
-            throw new Error("No se pudieron obtener las reservas");
-        }
-    }
-
-    async verificarCliente(email) {
-        try {
-            const { data } = await axios.get(`http://localhost:8080/api/v1/clientes/obtener-por-correo?correo=${email}`);
-            return data;
-        } catch (error) {
-            console.error('Error al verificar cliente ⚠️:', error.message);
-            return null;
-        }
-    }
-
-    async registrarCliente(info) {
-        try {
-            const clienteExistente = await this.verificarCliente(info.correoElectronico);
-            if (clienteExistente) {
-                return `El cliente con email ${info.correoElectronico} ya está registrado. \nPor favor, escribe "a" para iniciar sesión 😇.`;
-            }
-            info.consentimiento = true;
-            await axios.post('http://localhost:8080/api/v1/clientes/crear', info);
-            return '¡Registro exitoso! 🎉 \nAhora puedes iniciar sesión y acceder al sistema de reservas 🛏.\nEscribe "a" para iniciar sesión 😇.';
-        } catch (error) {
-            console.error('Error al registrar cliente:', error.message);
-            return 'Hubo un error al procesar tu registro. Por favor intenta más tarde ⚠️.';
-        }
-    }
-
     createRegistrationForm() {
         return CardFactory.adaptiveCard({
             $schema: "http://adaptivecards.io/schemas/adaptive-card.json",
@@ -529,47 +582,6 @@ class MyBot extends ActivityHandler {
                    }
                ]
         });
-    }
-
-    async obtenerHabitacionesDisponibles() {
-        try {
-            const { data } = await axios.get('http://localhost:8080/api/v1/habitaciones/disponibilidad');
-            return data;
-        } catch (error) {
-            console.error('Error al obtener habitaciones disponibles:', error.message);
-            return [];
-        }
-    }
-
-    async obtenerEmpleadosDisponibles() {
-        try {
-            const { data } = await axios.get('http://localhost:8080/api/v1/empleados/disponibilidad');
-            return data.map(e => ({ ...e, id: Number(e.id) })); // Convertir ID a número si no lo es
-        } catch (error) {
-            console.error('Error al obtener empleados disponibles:', error.message);
-            return [];
-        }
-    }
-
-    async obtenerHabitacionPorId(habitacionId) {
-        try {
-            const { data } = await axios.get(`http://localhost:8080/api/v1/habitaciones/obtener/${habitacionId}`);
-            return data;
-        } catch (error) {
-            console.error('Error al obtener habitación por ID:', error.message);
-            return null;
-        }
-    }
-
-    async confirmarReserva(reservaInfo) {
-        try {
-            const response = await axios.post('http://localhost:8080/api/v1/usuarios-estado/crear', reservaInfo);
-            console.log("Reserva confirmada:", response.data);
-            return response.data; // Devuelve la información de la reserva
-        } catch (error) {
-            console.error("Error al confirmar la reserva:", error);
-            throw new Error("Hubo un problema al confirmar la reserva. Inténtalo más tarde.");
-        }
     }
 
     createRoomCard(habitacion) {
